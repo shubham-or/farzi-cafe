@@ -1,0 +1,406 @@
+{
+    "Dish_Data": [
+        {
+            "Id": "1",
+            "Dish_Name": "Tempura Fried Prawn",
+            "Ingredients": [
+                {
+                    "name": "Prawn"
+                },
+                {
+                    "name": "Tempura Flour"
+                },
+                {
+                    "name": "Corn Flour"
+                },
+                {
+                    "name": "Sriracha Sauce"
+                },
+                {
+                    "name": "Lemon"
+                },
+                {
+                    "name": "Black Pepper"
+                },
+                {
+                    "name": "Brown Garlic"
+                },
+                {
+                    "name": "Mayonnaise"
+                },
+                {
+                    "name": "Chilli Paste"
+                },
+                {
+                    "name": "Hot Garlic Sauce"
+                }
+            ]
+        },
+        {
+            "Id": "2",
+            "Dish_Name": "Dal Chawal Arancini",
+            "Ingredients": [
+                {
+                    "name": "ARHAR DAL"
+                },
+                {
+                    "name": "RICE"
+                },
+                {
+                    "name": "OIL"
+                },
+                {
+                    "name": "GREEN CHILI"
+                },
+                {
+                    "name": "GINGER"
+                },
+                {
+                    "name": "GARLIC"
+                },
+                {
+                    "name": "CHEESE"
+                },
+                {
+                    "name": "PAPAD"
+                },
+                {
+                    "name": "CORN FLOUR"
+                },
+                {
+                    "name": "TEMPURA FLOUR"
+                }
+            ]
+        },
+        {
+            "Id": "3",
+            "Dish_Name": "Sweet Potato Chaat",
+            "Ingredients": [
+                {
+                    "name": "SWEET POTATO"
+                },
+                {
+                    "name": "CREAM"
+                },
+                {
+                    "name": "NUTMEG"
+                },
+                {
+                    "name": "GHEE"
+                },
+                {
+                    "name": "CURD"
+                },
+                {
+                    "name": "MINT SAUCE"
+                },
+                {
+                    "name": "BLACK PEPPER"
+                },
+                {
+                    "name": "SALT"
+                },
+                {
+                    "name": "CHAAT MASALA"
+                },
+                {
+                    "name": "SAUNTH CHUTNEY"
+                }
+            ]
+        },
+        {
+            "Id": "4",
+            "Dish_Name": "Tandoori Soya Chaap",
+            "Ingredients": [
+                {
+                    "name": "SOYA CHAAP"
+                },
+                {
+                    "name": "RED CHILI POWDER"
+                },
+                {
+                    "name": "CURD"
+                },
+                {
+                    "name": "CHEESE"
+                },
+                {
+                    "name": "CASHEWNUT"
+                },
+                {
+                    "name": "GREEN CHILI"
+                },
+                {
+                    "name": "FRESH CORIANDER"
+                },
+                {
+                    "name": "KASURI METHI"
+                },
+                {
+                    "name": "CREAM"
+                },
+                {
+                    "name": "LEMON"
+                }
+            ]
+        },
+        {
+            "Id": "5",
+            "Dish_Name": "Bhatti Ka Murgh",
+            "Ingredients": [
+                {
+                    "name": "CHICKEN"
+                },
+                {
+                    "name": "CURD"
+                },
+                {
+                    "name": "BROWN ONION"
+                },
+                {
+                    "name": "SALT"
+                },
+                {
+                    "name": "CORIANDER"
+                },
+                {
+                    "name": "GARAM MASALA"
+                },
+                {
+                    "name": "GINGER"
+                },
+                {
+                    "name": "GARLIC"
+                },
+                {
+                    "name": "BUTTER"
+                },
+                {
+                    "name": "GREEN CHILLI"
+                }
+            ]
+        }
+    ],
+
+    "Clues": [
+        {
+            "object_name": "Shrub Planters",
+            "clue": "Stop beating around the bush and start looking around.",
+            "location": "Exterior"
+        },
+        {
+            "object_name": "Outdoor Tables",
+            "clue": "I like it if you're messy, you mess up and I get to eat. ",
+            "location": "Exterior"
+        },
+        {
+            "object_name": "Outdoor Chair",
+            "clue": "Tired of figuring out these clues? Just sit and relax. ",
+            "location": "Exterior"
+        },
+        {
+            "object_name": "Dustbin",
+            "clue": "Everyone expects me to open up and clean up their mess. ",
+            "location": "Exterior"
+        },
+        {
+            "object_name": "Electrical Unit",
+            "clue": "Once you see where it's hidden, it'll come to you as a shock!",
+            "location": "Exterior"
+        },
+        {
+            "object_name": "First Floor Balcony",
+            "clue": "When a door closes, a window opens up.",
+            "location": "Exterior"
+        },
+        {
+            "object_name": "Lamppost",
+            "clue": "Chase the bright light and you shall find what you are looking for. ",
+            "location": "Exterior"
+        },
+        {
+            "object_name": "Farzi Cafe Branding",
+            "clue": "It's exactly us yet completely opposite.",
+            "location": "Exterior"
+        },
+        {
+            "object_name": "Building Sides - Glass Panels",
+            "clue": "Glass is replaced by Mirror",
+            "location": "Exterior"
+        },
+        {
+            "object_name": "Food Paintings",
+            "clue": "I am the love of every human being, spread on a canvas. You can see me but you can't touch me.",
+            "location": "Interior"
+        },
+        {
+            "object_name": "Bar Bottles",
+            "clue": "I make you sing, I make you dance. I make you laugh and I make you cry.",
+            "location": "Interior"
+        },
+        {
+            "object_name": "Table Seating",
+            "clue": "Number Card on Table",
+            "location": "Interior"
+        },
+        {
+            "object_name": "Jukebox",
+            "clue": "Why don't you play me a song?",
+            "location": "Interior"
+        },
+        {
+            "object_name": "LED Signs on Wall",
+            "clue": "Placed inside Sign",
+            "location": "Interior"
+        },
+        {
+            "object_name": "Grass Wallpaper",
+            "clue": "The grass is greener on the other side. ",
+            "location": "Interior"
+        },
+        {
+            "object_name": "Leather Sofa",
+            "clue": "Cushion placed on Sofa",
+            "location": "Interior"
+        },
+        {
+            "object_name": "Bar Stool",
+            "clue": "Come, sit, and have a drink.",
+            "location": "Interior"
+        },
+        {
+            "object_name": "Fridge",
+            "clue": "Multiple times a day, without knowing why. You keep opening the door, hoping for a pie.",
+            "location": "Kitchen"
+        },
+        {
+            "object_name": "Shelves",
+            "clue": "HINT CHANGE : Shelves_Placed Object",
+            "location": "Interior"
+        },
+        {
+            "object_name": "Utensils",
+            "clue": "Kitchen Utensils",
+            "location": "Kitchen"
+        },
+        {
+            "object_name": "Chimney above the Gas",
+            "clue": "Peek Under Chimney",
+            "location": "Kitchen"
+        },
+        {
+            "object_name": "Gas Stove",
+            "clue": "I am fire yet you are my master. I light on your command, as high as you want. ",
+            "location": "Kitchen"
+        },
+        {
+            "object_name": "Gas Stove - Dish",
+            "clue": "What doesn't burn you makes you perfectly cooked.",
+            "location": "Kitchen"
+        },
+        {
+            "object_name": "Signage - Keep Clean",
+            "clue": "Check your tables, check your chin. Make sure you keep it clean.",
+            "location": "Kitchen"
+        }
+    ],
+
+    "HidingSpots": [
+        {
+            "object_name": "Shrub Planters",
+            "hidingspot": "Shrub Color difference"
+        },
+        {
+            "object_name": "Outdoor Tables",
+            "hidingspot": "Number Card on Table"
+        },
+        {
+            "object_name": "Outdoor Chair",
+            "hidingspot": "Change Color"
+        },
+        {
+            "object_name": "Dustbin",
+            "hidingspot": "Open Dustbin"
+        },
+        {
+            "object_name": "Electrical Unit",
+            "hidingspot": "Behind"
+        },
+        {
+            "object_name": "First Floor Balcony",
+            "hidingspot": "One Window looks Open/Different"
+        },
+        {
+            "object_name": "Lamppost",
+            "hidingspot": "Light up Bulb"
+        },
+        {
+            "object_name": "Farzi Cafe Branding",
+            "hidingspot": "Logo is Mirrored Image"
+        },
+        {
+            "object_name": "Building Sides - Glass Panels",
+            "hidingspot": "Glass is replaced by Mirror"
+        },
+        {
+            "object_name": "Food Paintings",
+            "hidingspot": "Behind Painting"
+        },
+        {
+            "object_name": "Bar Bottles",
+            "hidingspot": "Bottle Label"
+        },
+        {
+            "object_name": "Table Seating",
+            "hidingspot": "Number Card on Table"
+        },
+        {
+            "object_name": "Jukebox",
+            "hidingspot": "Behind Jukebox"
+        },
+        {
+            "object_name": "LED Signs on Wall",
+            "hidingspot": "Placed inside Sign"
+        },
+        {
+            "object_name": "Grass Wallpaper",
+            "hidingspot": "Hidden in Grass"
+        },
+        {
+            "object_name": "Leather Sofa",
+            "hidingspot": "Cushion placed on Sofa"
+        },
+        {
+            "object_name": "Bar Stool",
+            "hidingspot": "Different Height"
+        },
+        {
+            "object_name": "Fridge",
+            "hidingspot": "Open Door"
+        },
+        {
+            "object_name": "Shelves",
+            "hidingspot": "Placed Object"
+        },
+        {
+            "object_name": "Utensils",
+            "hidingspot": "Add Kitchen Utensils"
+        },
+        {
+            "object_name": "Chimney above the Gas",
+            "hidingspot": "Peek Under Chimney"
+        },
+        {
+            "object_name": "Gas Stove",
+            "hidingspot": "One Lights Up"
+        },
+        {
+            "object_name": "Gas Stove - Dish",
+            "hidingspot": "Dish on Stove"
+        },
+        {
+            "object_name": "Signage - Keep Clean",
+            "hidingspot": "Behind Signage"
+        }
+    ]
+}
