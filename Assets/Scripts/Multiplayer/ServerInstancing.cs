@@ -32,6 +32,8 @@ public class ServerInstancing : NetworkBehaviour
     private const int MAX_PLAYERS = 5;
     private int WAITING_FOR_PLAYERS_DURATION = 3;
 
+    [SyncVar]
+    public LocalConnectionState serverState = LocalConnectionState.Stopped;
 
     private enum ParamsTypes
     {
@@ -68,6 +70,7 @@ public class ServerInstancing : NetworkBehaviour
         InstanceFinder.SceneManager.OnLoadEnd += OnSceneLoadEnd;
     }
 
+    //private void ServerManager_OnServerConnectionState(ServerConnectionStateArgs obj) => serverState = obj.ConnectionState;
 
 
     [ServerRpc(RequireOwnership = false)]
@@ -521,6 +524,7 @@ public class ServerInstancing : NetworkBehaviour
     {
         if (InstanceFinder.SceneManager)
             InstanceFinder.SceneManager.OnLoadEnd -= OnSceneLoadEnd;
+
     }
 
 }

@@ -11,6 +11,7 @@ using UnityEngine.Networking;
 using FishNet;
 using System.Linq;
 using FishNet.Object.Synchronizing;
+using FishNet.Transporting;
 
 public class ClientServerManager : NetworkBehaviour
 {
@@ -18,7 +19,8 @@ public class ClientServerManager : NetworkBehaviour
     public GameObject botPrefab;
 
     public double serverTime = 0;
-
+    [SyncVar]
+    public LocalConnectionState clientState = LocalConnectionState.Stopped;
 
     public static ClientServerManager Instance;
     private void Awake()
@@ -30,6 +32,11 @@ public class ClientServerManager : NetworkBehaviour
     {
 
     }
+
+
+    //private void ClientManager_OnClientConnectionState(ClientConnectionStateArgs obj) => clientState = obj.ConnectionState;
+
+
 
     [TargetRpc]
     public void SetDataForUser(NetworkConnection connection, RoomDetails _room, LeaderBoardItem _leaderBoard)
@@ -286,4 +293,5 @@ public class ClientServerManager : NetworkBehaviour
             }
         }
     }
+
 }

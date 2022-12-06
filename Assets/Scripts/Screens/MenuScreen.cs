@@ -61,10 +61,8 @@ public class MenuScreen : MonoBehaviour
         }
         else
         {
-            ServerInstancing.Instance.QuickRaceConnect(GameManager.Instance.GetUserData(), InstanceFinder.ClientManager.Connection);
-            PopUpManager.Instance.ShowPopup_WaitingForOtherPlayers(20);
+            PopUpManager.Instance.ShowPopup_WaitingForOtherPlayers();
         }
-
     }
 
     public void OnClick_Settings()

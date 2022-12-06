@@ -207,16 +207,20 @@ public class PopUpManager : MonoBehaviour
 
 
     #region Waiting for players
-    //Countdown countdown = new Countdown();
-    public void ShowPopup_WaitingForOtherPlayers(int _timer)
+    public void ShowPopup_WaitingForOtherPlayers()
     {
+        bgImage.enabled = true;
+        bgs.SetActive(true);
+        waitingForOtherPlayers.SetActive(true);
         ScreenManager.isMenuOrPopupOpen = true;
         ScreenManager.Instance.settingsIcon.SetActive(false);
 
-        bgImage.enabled = true;
-        bgs.SetActive(true);
-        waitingForPlayersTimer.text = "";
-        waitingForOtherPlayers.SetActive(true);
+        if (InstanceFinder.ClientManager.Started && InstanceFinder.ServerManager.Started)
+        {
+            ServerInstancing.Instance.QuickRaceConnect(GameManager.Instance.GetUserData(), InstanceFinder.ClientManager.Connection);
+        }
+        else
+            waitingForPlayersTimer.text = "Couldn't establish a connection!\nPlease try again.";
     }
 
     public void UpdateWaitingTime(float _timeLeft)
@@ -233,6 +237,15 @@ public class PopUpManager : MonoBehaviour
         ScreenManager.Instance.settingsIcon.SetActive(true);
         ScreenManager.isMenuOrPopupOpen = false;
     }
+
+    public void Close_HideWaitingForOtherPlayers()
+    {
+        bgs.SetActive(false);
+        bgImage.enabled = false;
+        waitingForOtherPlayers.SetActive(false);
+        ScreenManager.Instance.SwitchScreen(null, ScreenManager.Instance.menuScreen.gameObject);
+    }
+
     #endregion
 
 
