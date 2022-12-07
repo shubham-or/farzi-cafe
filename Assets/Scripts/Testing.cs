@@ -25,7 +25,7 @@ public class Testing : MonoBehaviour
 
     public async void Moralis_UserLogin()
     {
-        var user = await Moralis.LogInAsync("shraddha", "mypass");
+        var user = await Moralis.LogInAsync("shraddha_Patel", "mypass");
     }
 
 
