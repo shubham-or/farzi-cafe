@@ -21,7 +21,6 @@ public class Testing : MonoBehaviour
     void Start()
     {
         createUserBtn.onClick.AddListener(CreateMoralisUser);
-
     }
 
     public async void Moralis_UserLogin()
