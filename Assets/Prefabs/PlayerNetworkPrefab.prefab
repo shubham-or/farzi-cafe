@@ -587,7 +587,7 @@ Transform:
   - {fileID: 1464363316812703854}
   - {fileID: 8797673325473763628}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &1430121377380338756
 Animator:
@@ -726,11 +726,12 @@ MonoBehaviour:
   _defaultDespawnType: 0
   NetworkObserver: {fileID: 0}
   <PrefabId>k__BackingField: 1
-  _scenePathHash: 0
+  _scenePathHash: 2438200952
   <SceneId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 3149620285373193007
   _sceneNetworkObjects:
   - {fileID: 3066186518633742841}
+  - {fileID: 0}
   - {fileID: 0}
 --- !u!114 &2326317870283262542
 MonoBehaviour:

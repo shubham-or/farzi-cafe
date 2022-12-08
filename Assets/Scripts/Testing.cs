@@ -1,6 +1,3 @@
-using MoralisUnity;
-using MoralisUnity.Kits.AuthenticationKit;
-using MoralisUnity.Platform.Objects;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -9,7 +6,7 @@ using UnityEngine.UI;
 
 public class Testing : MonoBehaviour
 {
-    public AuthenticationKit authenticationKit;
+    //public AuthenticationKit authenticationKit;
     public string dappUrl;
     public string dappId;
 
@@ -25,7 +22,7 @@ public class Testing : MonoBehaviour
 
     public async void Moralis_UserLogin()
     {
-        var user = await Moralis.LogInAsync("shubhamtyagi", "mypass");
+        //var user = await Moralis.LogInAsync("shubhamtyagi", "mypass");
     }
 
 
@@ -33,20 +30,20 @@ public class Testing : MonoBehaviour
     public async void CreateMoralisUser()
     {
         print("CreateMoralisUser");
-        MoralisUser user = Moralis.Create<MoralisUser>();
-        user.username = usernameIF.text.Trim();
-        user.password = passwordIF.text.Trim();
-        user.email = emailIF.text.Trim(); // optional
-        try
-        {
-            // this signs the user up and doesnt log them in
-            await user.SignUpAsync();
-            // Hooray! Let them login the app now.
-        }
-        catch (System.Exception error)
-        {
-            // Show the error message somewhere and let the user try again.
-            Debug.Log("Error :" + error);
-        }
+        //MoralisUser user = Moralis.Create<MoralisUser>();
+        //user.username = usernameIF.text.Trim();
+        //user.password = passwordIF.text.Trim();
+        //user.email = emailIF.text.Trim(); // optional
+        //try
+        //{
+        //    // this signs the user up and doesnt log them in
+        //    await user.SignUpAsync();
+        //    // Hooray! Let them login the app now.
+        //}
+        //catch (System.Exception error)
+        //{
+        //    // Show the error message somewhere and let the user try again.
+        //    Debug.Log("Error :" + error);
+        //}
     }
 }

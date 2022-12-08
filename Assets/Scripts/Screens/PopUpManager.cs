@@ -215,7 +215,7 @@ public class PopUpManager : MonoBehaviour
         ScreenManager.isMenuOrPopupOpen = true;
         ScreenManager.Instance.settingsIcon.SetActive(false);
 
-        if (InstanceFinder.ClientManager.Started && InstanceFinder.ServerManager.Started)
+        if (InstanceFinder.ClientManager.Started) //&& InstanceFinder.ServerManager.Started
         {
             ServerInstancing.Instance.QuickRaceConnect(GameManager.Instance.GetUserData(), InstanceFinder.ClientManager.Connection);
         }
