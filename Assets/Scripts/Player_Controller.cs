@@ -8,6 +8,8 @@ public class Player_Controller : NetworkBehaviour
     [SerializeField] float groundCheckRadius = 0.2f;
     [SerializeField] Vector3 groundCheckOffset;
     [SerializeField] LayerMask groundLayer;
+    [SerializeField] Animator jump;
+
 
 
     Quaternion targetRotation;
@@ -24,7 +26,7 @@ public class Player_Controller : NetworkBehaviour
 
     private void Awake()
     {
-
+        
     }
 
     //public override void OnStartClient()
@@ -80,8 +82,16 @@ public class Player_Controller : NetworkBehaviour
 
         if ((Input.GetKeyDown(KeyCode.Space)) && isGrounded)
         {
+            jump.SetBool("IsPlay", true);
             GetComponent<Rigidbody>().AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            Debug.Log("Isplay true");
         }
+        //else
+        //{
+        //    jump.SetBool("IsPlay", false);
+        //    Debug.Log("Isplay false");
+
+        //}
     }
 
     void GroundCheck()

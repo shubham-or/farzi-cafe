@@ -1720,6 +1720,7 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 131072
+  jump: {fileID: 0}
   isGrounded: 0
   jumpForce: 3
 --- !u!114 &3715595139323921947
