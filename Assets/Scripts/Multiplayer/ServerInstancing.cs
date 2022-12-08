@@ -289,7 +289,9 @@ public class ServerInstancing : NetworkBehaviour
         _position.z = _position.z + playerPosition.z * _multiplier;
         print("Player Spawned at Position - " + _position);
 
-        GameObject _player = Instantiate(_playerPrefab, _position, Quaternion.identity);
+        GameObject _player = Instantiate(_playerPrefab);
+        _player.transform.position = _position;
+        _player.transform.rotation = Quaternion.Euler(new Vector3(0, 175, 0));
 
         if (connection != null)
             Spawn(_player, connection);

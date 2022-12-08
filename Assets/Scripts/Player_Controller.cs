@@ -9,8 +9,7 @@ public class Player_Controller : NetworkBehaviour
     [SerializeField] Vector3 groundCheckOffset;
     [SerializeField] LayerMask groundLayer;
 
-
-    Quaternion targetRotation;
+    [SerializeField] Quaternion targetRotation;
 
     CameraController cameraController;
 

@@ -44,7 +44,7 @@ public class GameplayScreen : MonoBehaviour
     }
 
 
-
+    
     public void StartGamePlay()
     {
         print("Start main GamePlay");

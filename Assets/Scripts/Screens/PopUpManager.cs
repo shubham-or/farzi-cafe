@@ -167,6 +167,8 @@ public class PopUpManager : MonoBehaviour
         dishReadyToServe.texture = _dishTexture;
         dishNameReadyToServe.text = _dishName;
         readyToServe.SetActive(true);
+
+        Invoke("HideReadyToServe", 5);
     }
 
     public void HideReadyToServe()

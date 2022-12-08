@@ -151,6 +151,8 @@ public class CluesManager : MonoBehaviour
             print("Found all Ingredients... And claim dish");
             //claim dish 
             GetCurrentDish().SetActive(true);
+            string _dishName = GameManager.Instance.GetUserData().dishData.Dish_Name;
+            PopUpManager.Instance.ShowPopup_ReadyToServe(_dishName, Resources.Load<Texture2D>($"DishImages/{_dishName }"));
             return;
         }
 
