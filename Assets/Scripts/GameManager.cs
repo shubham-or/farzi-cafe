@@ -2,6 +2,7 @@ using FirstGearGames.LobbyAndWorld.Lobbies.JoinCreateRoomCanvases;
 using FishNet.Managing.Timing;
 using FishNet.Object.Synchronizing;
 using FishNet.Transporting;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -100,6 +101,16 @@ public class GameManager : MonoBehaviour
     {
         print("OnFailed_UpdateRoomName" + _json);
     }
+
+
+    public static event Action Event_OnGameStarts;
+    public static void OnGameStarts() => Event_OnGameStarts?.Invoke();
+
+    public static event Action Event_OnGamePause;
+    public static void OnGamePause() => Event_OnGamePause?.Invoke();
+
+    public static event Action Event_OnGameResume;
+    public static void OnGameResume() => Event_OnGameResume?.Invoke();
 
 
 }

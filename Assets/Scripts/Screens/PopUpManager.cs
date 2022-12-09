@@ -1,7 +1,6 @@
 using FishNet;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -43,6 +42,7 @@ public class PopUpManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI waitingForPlayersTimer;
     [SerializeField] private CluesManager cluesManager;
     [SerializeField] private TimerDisplay timerDisplay;
+    [SerializeField] private GameObject crossWaitingPopup;
 
     [Space(20)]
     [SerializeField] private Image bgImage;
@@ -101,6 +101,7 @@ public class PopUpManager : MonoBehaviour
 
     public void ShowPopup_Farzified(string _dishName, Texture2D _dishTexture, float _timer)
     {
+        GameManager.OnGamePause();
         ScreenManager.isMenuOrPopupOpen = true;
         ScreenManager.Instance.settingsIcon.SetActive(true);
         bgImage.enabled = true;
@@ -115,8 +116,12 @@ public class PopUpManager : MonoBehaviour
 
 
     #region Item Found
+    bool isReadyToServe = false;
     private void ShowPopup_OnItemFound(Clue _clue)
     {
+        print("Clue Found ID - " + _clue.id);
+        GameManager.OnGamePause();
+        isReadyToServe = _clue.id == 9 ? true : false;
         itemTitle.text = $"You Found\n{_clue.ingredient}";
         item.texture = _clue.enabledTexture;
         bgImage.enabled = false;
@@ -135,6 +140,11 @@ public class PopUpManager : MonoBehaviour
         bgs.gameObject.SetActive(false);
         ScreenManager.Instance.settingsIcon.SetActive(false);
         ScreenManager.isMenuOrPopupOpen = false;
+
+        GameManager.OnGameResume();
+
+        if (isReadyToServe)
+            ShowPopup_ReadyToServe(GameManager.Instance.GetUserData().dishData.Dish_Name, Resources.Load<Texture2D>($"DishImages/{GameManager.Instance.GetUserData().dishData.Dish_Name}"));
     }
     #endregion
 
@@ -162,17 +172,21 @@ public class PopUpManager : MonoBehaviour
     #region Ready To Server
     public void ShowPopup_ReadyToServe(string _dishName, Texture2D _dishTexture)
     {
+        GameManager.OnGamePause();
         bgs.SetActive(true);
         bgImage.enabled = false;
         dishReadyToServe.texture = _dishTexture;
         dishNameReadyToServe.text = _dishName;
         readyToServe.SetActive(true);
+
+        Invoke("HideReadyToServe", 4);
     }
 
     public void HideReadyToServe()
     {
         bgs.SetActive(false);
         readyToServe.SetActive(false);
+        GameManager.OnGameResume();
     }
     #endregion
 
@@ -180,11 +194,11 @@ public class PopUpManager : MonoBehaviour
     #region Dish of the Day
     public void ShowPopup_DishOfTheDay(DishData.Dish _dish)
     {
+        GameManager.OnGamePause();
         ScreenManager.isMenuOrPopupOpen = true;
         ScreenManager.Instance.settingsIcon.SetActive(false);
         bgs.SetActive(true);
         bgImage.enabled = false;
-        //dish.texture = null;
         dishName.text = _dish.Dish_Name;
         dishOfTheDay.SetActive(true);
         Invoke("HideDishOfTheDay", 4);
@@ -196,12 +210,7 @@ public class PopUpManager : MonoBehaviour
         dishOfTheDay.SetActive(false);
         ScreenManager.Instance.settingsIcon.SetActive(true);
         ScreenManager.isMenuOrPopupOpen = false;
-
-
-
-
-        //GameManager.Instance.playerController.enabled = true;
-        //GameManager.Instance.playerInteraction.enabled = true;
+        GameManager.OnGameResume();
     }
     #endregion
 
@@ -217,10 +226,15 @@ public class PopUpManager : MonoBehaviour
 
         if (InstanceFinder.ClientManager.Started) //&& InstanceFinder.ServerManager.Started
         {
+            crossWaitingPopup.SetActive(false);
             ServerInstancing.Instance.QuickRaceConnect(GameManager.Instance.GetUserData(), InstanceFinder.ClientManager.Connection);
         }
         else
+        {
+            crossWaitingPopup.SetActive(true);
             waitingForPlayersTimer.text = "Couldn't establish a connection!\nPlease try again.";
+            InstanceFinder.ClientManager.StartConnection();
+        }
     }
 
     public void UpdateWaitingTime(float _timeLeft)

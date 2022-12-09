@@ -10,10 +10,10 @@ public class CluesManager : MonoBehaviour
 
 
     public List<Clue> clues = new List<Clue>();
-
+    public List<CluePoint> chosenCluePoints = new List<CluePoint>();
     public List<CluePoint> cluePoints = new List<CluePoint>();
 
-    public List<CluePoint> chosenCluePoints = new List<CluePoint>();
+
 
     public GameObject[] dishes;
 
@@ -58,9 +58,9 @@ public class CluesManager : MonoBehaviour
     private IEnumerator Co_Setup()
     {
         Generate_Clues();
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForEndOfFrame();
         Set_RandomClues();
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForEndOfFrame();
         AssignNextClue();
     }
 
@@ -140,7 +140,6 @@ public class CluesManager : MonoBehaviour
             tempPoints.RemoveAt(randomPoint);
 
             cp.Set_Clue(clues[i]);
-            print(cp.name);
             clues[i].clue = dish_Data.Clues.First(x => x.object_name.Trim().ToLower() == cp.name.Trim().ToLower()).clue;
             clues[i].hidingSpot = dish_Data.HidingSpots.First(x => x.object_name.Trim().ToLower() == cp.name.Trim().ToLower()).hidingspot;
             chosenCluePoints.Add(cp);
@@ -161,7 +160,6 @@ public class CluesManager : MonoBehaviour
             print("Found all Ingredients... And claim dish");
             //claim dish 
             GetCurrentDish().SetActive(true);
-            PopUpManager.Instance.ShowPopup_ReadyToServe(GameManager.Instance.GetUserData().dishData.Dish_Name, Resources.Load<Texture2D>($"DishImages/{GameManager.Instance.GetUserData().dishData.Dish_Name}"));
             return;
         }
 

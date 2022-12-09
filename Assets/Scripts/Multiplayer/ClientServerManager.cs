@@ -34,13 +34,6 @@ public class ClientServerManager : NetworkBehaviour
 
     }
 
-    public override void OnStopClient()
-    {
-        base.OnStopClient();
-        if (IsOwner)
-            base.Despawn();
-    }
-
 
     //private void ClientManager_OnClientConnectionState(ClientConnectionStateArgs obj) => clientState = obj.ConnectionState;
 

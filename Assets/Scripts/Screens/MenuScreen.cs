@@ -35,10 +35,16 @@ public class MenuScreen : MonoBehaviour
 
     private void Start() => Init();
 
-    private void OnEnable() => playButtonText.text = GameManager.Instance.hasGameStarted ? "Resume" : "Play";
-
-    private void OnDisable() => Init();
-
+    private void OnEnable()
+    {
+        playButtonText.text = GameManager.Instance.hasGameStarted ? "Resume" : "Play";
+        GameManager.OnGamePause();
+    }
+    private void OnDisable()
+    {
+        Init();
+        GameManager.OnGameResume();
+    }
     private void Init()
     {
         buttons.SetActive(true);

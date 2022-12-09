@@ -15,6 +15,7 @@ public class Player : NetworkBehaviour
 
 
         UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(gameObject, GameplayScene.Instance.gameObject.scene);
+        GameManager.OnGameStarts();
     }
 
     public override void OnStartClient()
@@ -42,7 +43,10 @@ public class Player : NetworkBehaviour
         base.OnStopClient();
         if (!IsOwner) return;
 
+
         GameManager.Instance.hasGameStarted = false;
+        print("Player Despawn");
+        Despawn();
 
     }
 
