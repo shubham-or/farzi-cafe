@@ -19,8 +19,9 @@ public class ClientServerManager : NetworkBehaviour
     public GameObject botPrefab;
 
     public double serverTime = 0;
-    [SyncVar]
-    public LocalConnectionState clientState = LocalConnectionState.Stopped;
+
+    //[SyncVar]
+    //public LocalConnectionState clientState = LocalConnectionState.Stopped;
 
     public static ClientServerManager Instance;
     private void Awake()
@@ -31,6 +32,13 @@ public class ClientServerManager : NetworkBehaviour
     private void Start()
     {
 
+    }
+
+    public override void OnStopClient()
+    {
+        base.OnStopClient();
+        if (IsOwner)
+            base.Despawn();
     }
 
 
@@ -59,8 +67,6 @@ public class ClientServerManager : NetworkBehaviour
 
         //UserMetaData.currentRoom = _room;
 
-        //if (!IsOwner) return;
-
         GameManager.Instance.SetClientId(connection.ClientId.ToString());
         GameManager.Instance.SetRoomDetails(_room);
         GameManager.Instance.SetDishData(_room.dishData);
@@ -70,22 +76,6 @@ public class ClientServerManager : NetworkBehaviour
         //Debug.Log("DIsh COunt For USer:   " + _room.userData[UserMetaData.myAddress].userDishes.selectedDish.Count);
     }
 
-
-    [TargetRpc]
-    public void ActivatePlayerScripts(NetworkConnection connection, GameObject _player)
-    {
-        _player.GetComponent<Player_Controller>().enabled = true;
-        _player.GetComponent<Player_Interaction>().enabled = true;
-    }
-
-
-
-
-    //[ContextMenu("GetLeaderboard")]
-    //public void GetLeaderboard()
-    //{
-    //    ServerInstancing.Instance.GetLeaderboard(GameManager.Instance.GetUserData().userDataServer.uid, GameManager.Instance.GetUserData().userDataServer.roomId);
-    //}
 
 
     [TargetRpc]

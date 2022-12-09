@@ -32,8 +32,8 @@ public class ServerInstancing : NetworkBehaviour
     private const int MAX_PLAYERS = 5;
     private int WAITING_FOR_PLAYERS_DURATION = 3;
 
-    [SyncVar]
-    public LocalConnectionState serverState = LocalConnectionState.Stopped;
+    //[SyncVar]
+    //public LocalConnectionState serverState = LocalConnectionState.Stopped;
 
     private enum ParamsTypes
     {

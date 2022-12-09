@@ -6,8 +6,6 @@ public class Player : NetworkBehaviour
     [ContextMenu("InitialisePlayer")]
     private void InitialisePlayer()
     {
-        if (!IsOwner) return;
-
         GetComponent<Player_Controller>().Init(GameplayScene.Instance.mainCamera);
         GetComponent<Player_Controller>().enabled = true;
         GetComponent<Player_Interaction>().Init();
@@ -29,11 +27,13 @@ public class Player : NetworkBehaviour
             GetComponent<Player_Interaction>().enabled = false;
             enabled = false;
         }
+        else
+        {
+            GameManager.Instance.playerController = GetComponent<Player_Controller>();
+            GameManager.Instance.playerInteraction = GetComponent<Player_Interaction>();
 
-        GameManager.Instance.playerController = GetComponent<Player_Controller>();
-        GameManager.Instance.playerInteraction = GetComponent<Player_Interaction>();
-
-        Invoke("InitialisePlayer", 5);
+            Invoke("InitialisePlayer", 5);
+        }
     }
 
 
