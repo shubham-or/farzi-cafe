@@ -31,8 +31,18 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-
+        Event_OnGamePause += Callback_OnGamePause;
+        Event_OnGameResume += Callback_OnGameResume;
     }
+
+    private void OnDestroy()
+    {
+        Event_OnGamePause -= Callback_OnGamePause;
+        Event_OnGameResume -= Callback_OnGameResume;
+    }
+
+
+    public static void SetCursorLockState(CursorLockMode _mode) => Cursor.lockState = _mode;
 
 
     public void SetUserData(UserData _userData) => userData = _userData;
@@ -102,6 +112,17 @@ public class GameManager : MonoBehaviour
         print("OnFailed_UpdateRoomName" + _json);
     }
 
+    private void Callback_OnGamePause()
+    {
+        print("OnGamePaused");
+        SetCursorLockState(CursorLockMode.None);
+    }
+
+    private void Callback_OnGameResume()
+    {
+        print("OnGameResume");
+        SetCursorLockState(CursorLockMode.Confined);
+    }
 
     public static event Action Event_OnGameStarts;
     public static void OnGameStarts() => Event_OnGameStarts?.Invoke();

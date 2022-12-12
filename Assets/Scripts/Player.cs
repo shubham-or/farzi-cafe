@@ -16,6 +16,7 @@ public class Player : NetworkBehaviour
 
         UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(gameObject, GameplayScene.Instance.gameObject.scene);
         GameManager.OnGameStarts();
+        GameManager.SetCursorLockState(CursorLockMode.Locked);
     }
 
     public override void OnStartClient()

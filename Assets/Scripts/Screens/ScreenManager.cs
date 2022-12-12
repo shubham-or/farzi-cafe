@@ -27,6 +27,13 @@ public class ScreenManager : MonoBehaviour
         Init();
     }
 
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+            OnClick_SettingsIcon();
+    }
+
     public void Init()
     {
         splashScreen.gameObject.SetActive(true);
@@ -50,15 +57,20 @@ public class ScreenManager : MonoBehaviour
 
     public void OnClick_SettingsIcon()
     {
-        isMenuOrPopupOpen = !isMenuOrPopupOpen;
+        if (isMenuOrPopupOpen)
+        {
+            isMenuOrPopupOpen = false;
+            GameManager.OnGameResume();
+        }
+        else
+        {
+            isMenuOrPopupOpen = false;
+            GameManager.OnGamePause();
+        }
         menuScreen.gameObject.SetActive(isMenuOrPopupOpen);
         splashScreen.gameObject.SetActive(false);
         loginScreen.gameObject.SetActive(false);
         settingsIcon.SetActive(false);
-    }
 
-    #region Events
-    public static event Action Event_OnPlay;
-    public static void OnPlay() => Event_OnPlay?.Invoke();
-    #endregion
+    }
 }
