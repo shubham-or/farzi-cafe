@@ -9,6 +9,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public string gamePlaySceneName = "GamePlay";
+    public bool useFirebase = false;
 
     [Header("-----References-----")]
     public TimeManager timeManager;

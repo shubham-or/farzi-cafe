@@ -103,10 +103,12 @@ public class MenuScreen : MonoBehaviour
     public void OnInputField_Username(string _value)
     {
         error.gameObject.SetActive(false);
+        GameManager.Instance.GetUserData().userDataServer.userName = _value.Trim();
 #if UNITY_EDITOR
         OnSuccess_UpdateUsername("");
 #elif UNITY_WEBGL && !UNITY_EDITOR
-        FirebaseDBLibrary.UpdateUserName(GameManager.Instance.GetUserData().userDataServer.uid, "userName", userName.text.Trim().ToUpper(), gameObject.name, "OnSuccess_UpdateUsername", "OnFailed_UpdateUsername");
+        if(GameManager.Instance.useFirebase)
+            FirebaseDBLibrary.UpdateUserName(GameManager.Instance.GetUserData().userDataServer.uid, "userName", userName.text.Trim().ToUpper(), gameObject.name, "OnSuccess_UpdateUsername", "OnFailed_UpdateUsername");
 #endif
     }
 

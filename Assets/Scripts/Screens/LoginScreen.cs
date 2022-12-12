@@ -54,7 +54,7 @@ public class LoginScreen : MonoBehaviour
             }
         });
 #elif UNITY_WEBGL && !UNITY_EDITOR
-        FirebaseAuthLibrary.SignInWithGoogle(gameObject.name, "OnGmail_Success", "OnGmail_Failed");
+            FirebaseAuthLibrary.SignInWithGoogle(gameObject.name, "OnGmail_Success", "OnGmail_Failed");
 #endif
     }
 
@@ -78,7 +78,10 @@ public class LoginScreen : MonoBehaviour
             }
         };
 
-        FirebaseDBLibrary.GetJSON(loginResponse.user.uid, gameObject.name, "OnGmail_GetDataSuccess", "OnGmail_GetDataFailed");
+        if (GameManager.Instance.useFirebase)
+            FirebaseDBLibrary.GetJSON(loginResponse.user.uid, gameObject.name, "OnGmail_GetDataSuccess", "OnGmail_GetDataFailed");
+        else
+            OnSuccess_PostData("");
     }
 
     public void OnGmail_Failed(string _json)
@@ -228,7 +231,10 @@ public class LoginScreen : MonoBehaviour
 #if UNITY_EDITOR  || UNITY_STANDALONE_WIN
         OnSuccess_UpdateUsername("");
 #elif UNITY_WEBGL
-        FirebaseDBLibrary.UpdateUserName(GameManager.Instance.GetUserData().userDataServer.uid, "userName", userName.text.Trim().ToUpper(), gameObject.name, "OnSuccess_UpdateUsername", "OnFailed_UpdateUsername");
+        if (GameManager.Instance.useFirebase)
+            FirebaseDBLibrary.UpdateUserName(GameManager.Instance.GetUserData().userDataServer.uid, "userName", userName.text.Trim().ToUpper(), gameObject.name, "OnSuccess_UpdateUsername", "OnFailed_UpdateUsername");
+        else  
+            OnSuccess_UpdateUsername("");
 #endif
     }
 
