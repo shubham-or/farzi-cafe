@@ -209,11 +209,6 @@
             "location": "Exterior"
         },
         {
-            "object_name": "First Floor Balcony",
-            "clue": "The view is even better from the first floor balcony. Open the window and you shall see.",
-            "location": "Exterior"
-        },
-        {
             "object_name": "Lamppost",
             "clue": "Many lamp posts to choose from, chase the brightest of them all.",
             "location": "Exterior"
@@ -325,10 +320,6 @@
         {
             "object_name": "Electrical Unit",
             "hidingspot": "Behind"
-        },
-        {
-            "object_name": "First Floor Balcony",
-            "hidingspot": "One Window looks Open/Different"
         },
         {
             "object_name": "Lamppost",

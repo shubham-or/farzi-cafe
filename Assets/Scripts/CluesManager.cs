@@ -10,10 +10,10 @@ public class CluesManager : MonoBehaviour
 
 
     public List<Clue> clues = new List<Clue>();
-
+    public List<CluePoint> chosenCluePoints = new List<CluePoint>();
     public List<CluePoint> cluePoints = new List<CluePoint>();
 
-    public List<CluePoint> chosenCluePoints = new List<CluePoint>();
+
 
     public GameObject[] dishes;
 
@@ -40,11 +40,8 @@ public class CluesManager : MonoBehaviour
         ResetData();
         print("SelectRandomDish");
         SelectRandomDish();
-        print("Generate_Clues");
         Generate_Clues();
-        print("Set_RandomClues");
         Set_RandomClues();
-        print("AssignNextClue");
         AssignNextClue();
     }
 
@@ -54,11 +51,16 @@ public class CluesManager : MonoBehaviour
 
         ResetData();
         selectedDish = _dish;
-        print("Generate_Clues");
+
+        StartCoroutine(Co_Setup());
+    }
+
+    private IEnumerator Co_Setup()
+    {
         Generate_Clues();
-        print("Set_RandomClues");
+        yield return new WaitForEndOfFrame();
         Set_RandomClues();
-        print("AssignNextClue");
+        yield return new WaitForEndOfFrame();
         AssignNextClue();
     }
 
@@ -67,6 +69,7 @@ public class CluesManager : MonoBehaviour
 
     private void ResetData()
     {
+        print("ResetData");
         currentClueIndex = -1;
         currentClue = null;
         selectedDish = null;
@@ -99,6 +102,7 @@ public class CluesManager : MonoBehaviour
     #region Clues
     public void Generate_Clues()
     {
+        print("Generate_Clues");
         int ingredientCount = selectedDish.Ingredients.Count;
         for (int i = 0; i < ingredientCount; i++)
         {
@@ -123,6 +127,7 @@ public class CluesManager : MonoBehaviour
 
     public void Set_RandomClues()
     {
+        print("Set_RandomClues");
         List<CluePoint> tempPoints = new List<CluePoint>(cluePoints);
 
         for (int i = 0; i < clues.Count; i++)
@@ -135,8 +140,8 @@ public class CluesManager : MonoBehaviour
             tempPoints.RemoveAt(randomPoint);
 
             cp.Set_Clue(clues[i]);
-            clues[i].clue = dish_Data.Clues.First(x => x.object_name == cp.name).clue;
-            clues[i].hidingSpot = dish_Data.HidingSpots.First(x => x.object_name == cp.name).hidingspot;
+            clues[i].clue = dish_Data.Clues.First(x => x.object_name.Trim().ToLower() == cp.name.Trim().ToLower()).clue;
+            clues[i].hidingSpot = dish_Data.HidingSpots.First(x => x.object_name.Trim().ToLower() == cp.name.Trim().ToLower()).hidingspot;
             chosenCluePoints.Add(cp);
         }
     }
@@ -145,6 +150,10 @@ public class CluesManager : MonoBehaviour
     [ContextMenu("AssignNextClue")]
     public void AssignNextClue()
     {
+        if (clues.Count == 0) return;
+        print("AssignNextClue");
+
+
         currentClueIndex++;
         if (currentClueIndex == clues.Count)
         {

@@ -35,10 +35,16 @@ public class MenuScreen : MonoBehaviour
 
     private void Start() => Init();
 
-    private void OnEnable() => playButtonText.text = GameManager.Instance.hasGameStarted ? "Resume" : "Play";
-
-    private void OnDisable() => Init();
-
+    private void OnEnable()
+    {
+        playButtonText.text = GameManager.Instance.hasGameStarted ? "Resume" : "Play";
+        GameManager.OnGamePause();
+    }
+    private void OnDisable()
+    {
+        Init();
+        GameManager.OnGameResume();
+    }
     private void Init()
     {
         buttons.SetActive(true);
@@ -61,10 +67,8 @@ public class MenuScreen : MonoBehaviour
         }
         else
         {
-            ServerInstancing.Instance.QuickRaceConnect(GameManager.Instance.GetUserData(), InstanceFinder.ClientManager.Connection);
-            PopUpManager.Instance.ShowPopup_WaitingForOtherPlayers(20);
+            PopUpManager.Instance.ShowPopup_WaitingForOtherPlayers();
         }
-
     }
 
     public void OnClick_Settings()

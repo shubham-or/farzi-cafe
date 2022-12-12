@@ -8,6 +8,8 @@ public class Player_Controller : NetworkBehaviour
     [SerializeField] float groundCheckRadius = 0.2f;
     [SerializeField] Vector3 groundCheckOffset;
     [SerializeField] LayerMask groundLayer;
+    [SerializeField] Animator jump;
+
 
 
     Quaternion targetRotation;
@@ -42,7 +44,8 @@ public class Player_Controller : NetworkBehaviour
     private void Update()
     {
         // add conditon for connection
-        if (!IsOwner) return; if (cameraController == null) return;
+        if (!IsOwner) return;
+        if (cameraController == null) return;
 
         transform.LookAt(transform.position + cameraController.transform.forward, Vector3.up);
 
@@ -68,20 +71,22 @@ public class Player_Controller : NetworkBehaviour
             isIdle = false;
             transform.position += moveDir * moveSpeed * Time.deltaTime;
             targetRotation = Quaternion.LookRotation(moveDir);
+            animator.SetBool("IsPlay", false);
+
         }
+        else if ((Input.GetKeyDown(KeyCode.Space)) && isGrounded)
+        {
+            animator.SetBool("IsPlay", true);
+            GetComponent<Rigidbody>().AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+
+        }
+
         else isIdle = true;
 
         transform.rotation = Quaternion.RotateTowards(transform.rotation,
             targetRotation, rotattionSpeed + Time.deltaTime);
 
         animator.SetFloat("moveAmount", moveAmount, 0.2f, Time.deltaTime);
-
-        //print("moveAmount : " + moveAmount);
-
-        if ((Input.GetKeyDown(KeyCode.Space)) && isGrounded)
-        {
-            GetComponent<Rigidbody>().AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-        }
     }
 
     void GroundCheck()

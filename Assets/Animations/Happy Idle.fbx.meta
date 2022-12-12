@@ -5,7 +5,7 @@ ModelImporter:
   internalIDToNameTable:
   - first:
       74: -203655887218126122
-    second: mixamo.com
+    second: Idle
   externalObjects: {}
   materials:
     materialImportMode: 2
@@ -20,7 +20,13 @@ ModelImporter:
     removeConstantScaleCurves: 0
     motionNodeName: 
     rigImportErrors: 
-    rigImportWarnings: 
+    rigImportWarnings: "Avatar Rig Configuration mis-match. Bone length in configuration
+      does not match position in animation file:\n\t'mixamorig:LeftUpLeg' : position
+      error = 3.564595 mm\n\t'mixamorig:LeftLeg' : position error = 6.052110 mm\n\t'mixamorig:LeftFoot'
+      : position error = 33.450539 mm\n\t'mixamorig:LeftToeBase' : position error
+      = 2.862106 mm\n\t'mixamorig:RightUpLeg' : position error = 3.239770 mm\n\t'mixamorig:RightLeg'
+      : position error = 5.727938 mm\n\t'mixamorig:RightFoot' : position error =
+      33.858158 mm\n\t'mixamorig:RightToeBase' : position error = 1.016564 mm\n"
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
@@ -36,7 +42,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: mixamo.com
+      name: Idle
       takeName: mixamo.com
       internalID: 0
       firstFrame: 0

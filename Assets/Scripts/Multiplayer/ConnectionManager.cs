@@ -11,6 +11,12 @@ public class ConnectionManager : MonoBehaviour
 
     void Start()
     {
+        Init();
+    }
+
+    [ContextMenu("Init")]
+    public void Init()
+    {
         if (isServer) InstanceFinder.ServerManager.StartConnection();
         else InstanceFinder.ClientManager.StartConnection();
     }
