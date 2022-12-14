@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
 {
     public string gamePlaySceneName = "GamePlay";
     public bool useFirebase = false;
+    public bool isGameplayPaused = false;
 
     [Header("-----References-----")]
     public TimeManager timeManager;
@@ -32,18 +33,15 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        Event_OnGamePause += Callback_OnGamePause;
-        Event_OnGameResume += Callback_OnGameResume;
+        OnGamePause += Callback_OnGamePause;
+        OnGameResume += Callback_OnGameResume;
     }
 
     private void OnDestroy()
     {
-        Event_OnGamePause -= Callback_OnGamePause;
-        Event_OnGameResume -= Callback_OnGameResume;
+        OnGamePause -= Callback_OnGamePause;
+        OnGameResume -= Callback_OnGameResume;
     }
-
-
-    public static void SetCursorLockState(CursorLockMode _mode) => Cursor.lockState = _mode;
 
 
     public void SetUserData(UserData _userData) => userData = _userData;
@@ -70,12 +68,15 @@ public class GameManager : MonoBehaviour
 
     public void UpdateRoomDetailsOnFirebase(bool _setEmpty = false)
     {
-        print("UpdateRoomDetailsOnFIREBASE " + _setEmpty);
 #if UNITY_EDITOR || UNITY_STANDALONE_WIN
 
 #elif UNITY_WEBGL
-        FirebaseDBLibrary.UpdateRoomID(GetUserData().userDataServer.uid, "roomID", _setEmpty ? "" : GetUserData().userDataServer.roomId.Trim(), gameObject.name, "OnSuccess_UpdateRoomID", "OnFailed_UpdateRoomID");
-        FirebaseDBLibrary.UpdateRoomName(GetUserData().userDataServer.uid, "roomName", _setEmpty ? "" : GetUserData().userDataServer.roomName.Trim(), gameObject.name, "OnSuccess_UpdateRoomName", "OnFailed_UpdateRoomName");
+        if(useFirebase)
+        {
+            print("UpdateRoomDetailsOnFIREBASE " + _setEmpty);
+            FirebaseDBLibrary.UpdateRoomID(GetUserData().userDataServer.uid, "roomID", _setEmpty ? "" : GetUserData().userDataServer.roomId.Trim(), gameObject.name, "OnSuccess_UpdateRoomID", "OnFailed_UpdateRoomID");
+            FirebaseDBLibrary.UpdateRoomName(GetUserData().userDataServer.uid, "roomName", _setEmpty ? "" : GetUserData().userDataServer.roomName.Trim(), gameObject.name, "OnSuccess_UpdateRoomName", "OnFailed_UpdateRoomName");
+        }
 #endif
     }
 
@@ -113,26 +114,47 @@ public class GameManager : MonoBehaviour
         print("OnFailed_UpdateRoomName" + _json);
     }
 
+
+    public static void SetCursorLockState(CursorLockMode _mode)
+    {
+        Cursor.lockState = _mode;
+        switch (_mode)
+        {
+            case CursorLockMode.None:
+                Cursor.visible = true;
+                break;
+            case CursorLockMode.Locked:
+                Cursor.visible = false;
+                break;
+            default:
+                break;
+        }
+
+    }
+
     private void Callback_OnGamePause()
     {
         print("OnGamePaused");
+        isGameplayPaused = true;
         SetCursorLockState(CursorLockMode.None);
     }
 
     private void Callback_OnGameResume()
     {
         print("OnGameResume");
-        SetCursorLockState(CursorLockMode.Confined);
+        isGameplayPaused = false;
+        SetCursorLockState(CursorLockMode.Locked);
     }
 
-    public static event Action Event_OnGameStarts;
-    public static void OnGameStarts() => Event_OnGameStarts?.Invoke();
 
-    public static event Action Event_OnGamePause;
-    public static void OnGamePause() => Event_OnGamePause?.Invoke();
+    public static event Action OnGameStarts;
+    public static void Event_OnGameStarts() => OnGameStarts?.Invoke();
 
-    public static event Action Event_OnGameResume;
-    public static void OnGameResume() => Event_OnGameResume?.Invoke();
+    public static event Action OnGamePause;
+    public static void Event_OnGamePause() => OnGamePause?.Invoke();
+
+    public static event Action OnGameResume;
+    public static void Event_OnGameResume() => OnGameResume?.Invoke();
 
 
 }

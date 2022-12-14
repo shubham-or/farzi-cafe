@@ -78,9 +78,7 @@ public class Player_Interaction : NetworkBehaviour
     void Update()
     {
         if (!IsOwner) return;
-
-
-        if (ScreenManager.isMenuOrPopupOpen) return;
+        if (GameManager.Instance.isGameplayPaused) return;
         if (m_UIHandler == null || m_CluesManager == null || GameManager.Instance.leftdoor == null || GameManager.Instance.rightdoor == null || MainCamera == null) return;
 
         Ray ray = new Ray(MainCamera.transform.position, (MainCamera.transform.forward) * interactionDistance);

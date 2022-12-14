@@ -88,7 +88,6 @@ public class PopUpManager : MonoBehaviour
 
     public void OnClick_PlayAgain()
     {
-        ScreenManager.isMenuOrPopupOpen = true;
         ScreenManager.Instance.settingsIcon.SetActive(false);
         bgImage.enabled = false;
         bgs.gameObject.SetActive(false);
@@ -101,8 +100,7 @@ public class PopUpManager : MonoBehaviour
 
     public void ShowPopup_Farzified(string _dishName, Texture2D _dishTexture, float _timer)
     {
-        GameManager.OnGamePause();
-        ScreenManager.isMenuOrPopupOpen = true;
+        GameManager.Event_OnGamePause();
         ScreenManager.Instance.settingsIcon.SetActive(true);
         bgImage.enabled = true;
         bgs.gameObject.SetActive(true);
@@ -120,7 +118,7 @@ public class PopUpManager : MonoBehaviour
     private void ShowPopup_OnItemFound(Clue _clue)
     {
         print("Clue Found ID - " + _clue.id);
-        GameManager.OnGamePause();
+        GameManager.Event_OnGamePause();
         isReadyToServe = _clue.id == 9 ? true : false;
         itemTitle.text = $"You Found\n{_clue.ingredient}";
         item.texture = _clue.enabledTexture;
@@ -128,7 +126,6 @@ public class PopUpManager : MonoBehaviour
         bgs.gameObject.SetActive(true);
         foundItem.SetActive(true);
         ScreenManager.Instance.settingsIcon.SetActive(true);
-        ScreenManager.isMenuOrPopupOpen = true;
 
         Invoke("HideItemFound", 3);
     }
@@ -139,9 +136,8 @@ public class PopUpManager : MonoBehaviour
         bgImage.enabled = false;
         bgs.gameObject.SetActive(false);
         ScreenManager.Instance.settingsIcon.SetActive(false);
-        ScreenManager.isMenuOrPopupOpen = false;
 
-        GameManager.OnGameResume();
+        GameManager.Event_OnGameResume();
 
         if (isReadyToServe)
             ShowPopup_ReadyToServe(GameManager.Instance.GetUserData().dishData.Dish_Name, Resources.Load<Texture2D>($"DishImages/{GameManager.Instance.GetUserData().dishData.Dish_Name}"));
@@ -157,7 +153,6 @@ public class PopUpManager : MonoBehaviour
 
     private IEnumerator Co_OnDishFound(string _dishName, Texture2D _dishTexture, float _timer)
     {
-        ScreenManager.isMenuOrPopupOpen = true;
         ScreenManager.Instance.settingsIcon.SetActive(false);
         ShowPopup_ReadyToServe(_dishName, _dishTexture);
         GameManager.Instance.playerController.enabled = false;
@@ -172,7 +167,7 @@ public class PopUpManager : MonoBehaviour
     #region Ready To Server
     public void ShowPopup_ReadyToServe(string _dishName, Texture2D _dishTexture)
     {
-        GameManager.OnGamePause();
+        GameManager.Event_OnGamePause();
         bgs.SetActive(true);
         bgImage.enabled = false;
         dishReadyToServe.texture = _dishTexture;
@@ -186,7 +181,7 @@ public class PopUpManager : MonoBehaviour
     {
         bgs.SetActive(false);
         readyToServe.SetActive(false);
-        GameManager.OnGameResume();
+        GameManager.Event_OnGameResume();
     }
     #endregion
 
@@ -194,8 +189,7 @@ public class PopUpManager : MonoBehaviour
     #region Dish of the Day
     public void ShowPopup_DishOfTheDay(DishData.Dish _dish)
     {
-        GameManager.OnGamePause();
-        ScreenManager.isMenuOrPopupOpen = true;
+        GameManager.Event_OnGamePause();
         ScreenManager.Instance.settingsIcon.SetActive(false);
         bgs.SetActive(true);
         bgImage.enabled = false;
@@ -209,8 +203,7 @@ public class PopUpManager : MonoBehaviour
         bgs.SetActive(false);
         dishOfTheDay.SetActive(false);
         ScreenManager.Instance.settingsIcon.SetActive(true);
-        ScreenManager.isMenuOrPopupOpen = false;
-        GameManager.OnGameResume();
+        GameManager.Event_OnGameResume();
     }
     #endregion
 
@@ -221,7 +214,6 @@ public class PopUpManager : MonoBehaviour
         bgImage.enabled = true;
         bgs.SetActive(true);
         waitingForOtherPlayers.SetActive(true);
-        ScreenManager.isMenuOrPopupOpen = true;
         ScreenManager.Instance.settingsIcon.SetActive(false);
 
         if (InstanceFinder.ClientManager.Started) //&& InstanceFinder.ServerManager.Started
@@ -249,7 +241,6 @@ public class PopUpManager : MonoBehaviour
         bgImage.enabled = false;
         waitingForOtherPlayers.SetActive(false);
         ScreenManager.Instance.settingsIcon.SetActive(true);
-        ScreenManager.isMenuOrPopupOpen = false;
     }
 
     public void Close_HideWaitingForOtherPlayers()

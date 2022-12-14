@@ -12,7 +12,6 @@ public class ScreenManager : MonoBehaviour
 
     [Space(20)]
     public GameObject settingsIcon;
-    public static bool isMenuOrPopupOpen = false;
 
     public static ScreenManager Instance;
     private void Awake()
@@ -57,20 +56,23 @@ public class ScreenManager : MonoBehaviour
 
     public void OnClick_SettingsIcon()
     {
-        if (isMenuOrPopupOpen)
+        if (GameManager.Instance.isGameplayPaused)
         {
-            isMenuOrPopupOpen = false;
-            GameManager.OnGameResume();
+            menuScreen.gameObject.SetActive(false);
+            splashScreen.gameObject.SetActive(false);
+            loginScreen.gameObject.SetActive(false);
+            //settingsIcon.SetActive(true);
+            GameManager.Event_OnGameResume();
         }
         else
         {
-            isMenuOrPopupOpen = false;
-            GameManager.OnGamePause();
+            menuScreen.gameObject.SetActive(true);
+            splashScreen.gameObject.SetActive(false);
+            loginScreen.gameObject.SetActive(false);
+            //settingsIcon.SetActive(false);
+            GameManager.Event_OnGamePause();
         }
-        menuScreen.gameObject.SetActive(isMenuOrPopupOpen);
-        splashScreen.gameObject.SetActive(false);
-        loginScreen.gameObject.SetActive(false);
-        settingsIcon.SetActive(false);
+
 
     }
 }

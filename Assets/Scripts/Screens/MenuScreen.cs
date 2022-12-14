@@ -38,12 +38,11 @@ public class MenuScreen : MonoBehaviour
     private void OnEnable()
     {
         playButtonText.text = GameManager.Instance.hasGameStarted ? "Resume" : "Play";
-        GameManager.OnGamePause();
+        GameManager.Event_OnGamePause();
     }
     private void OnDisable()
     {
         Init();
-        GameManager.OnGameResume();
     }
     private void Init()
     {
@@ -61,9 +60,9 @@ public class MenuScreen : MonoBehaviour
     {
         if (GameManager.Instance.hasGameStarted)
         {
-            ScreenManager.isMenuOrPopupOpen = !ScreenManager.isMenuOrPopupOpen;
+            GameManager.Event_OnGameResume();
             gameObject.SetActive(false);
-            settingsIcon.SetActive(true);
+            //settingsIcon.SetActive(true);
         }
         else
         {

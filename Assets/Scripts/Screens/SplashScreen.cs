@@ -15,7 +15,7 @@ public class SplashScreen : MonoBehaviour
     public void Init(float _hold)
     {
         hold = _hold;
-        ScreenManager.isMenuOrPopupOpen = true;
+        GameManager.Event_OnGamePause();
         //StopCoroutine("Co_Init");
         //StartCoroutine("Co_Init");
     }
