@@ -68,6 +68,7 @@ namespace NaughtyCharacter
         private Vector3 _lastMovementInput;
         private bool _hasMovementInput;
         private bool _jumpInput;
+        public bool isPlayerInAir = false;
 
         public Vector3 Velocity => _characterController.velocity;
         public Vector3 HorizontalVelocity => _characterController.velocity.SetY(0.0f);
@@ -121,10 +122,21 @@ namespace NaughtyCharacter
             _movementInput = movementInput;
             _hasMovementInput = hasMovementInput;
         }
-
+        
         public void SetJumpInput(bool jumpInput)
         {
             _jumpInput = jumpInput;
+
+
+            if(jumpInput && !isPlayerInAir)
+            {
+                isPlayerInAir = true;
+                _characterAnimator._animator.SetTrigger("IsJump");
+            }
+            else
+            {
+                isPlayerInAir = false;
+            }
         }
 
         public Vector2 GetControlRotation()
