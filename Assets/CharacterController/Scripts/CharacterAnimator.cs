@@ -11,7 +11,7 @@ namespace NaughtyCharacter
 
     public class CharacterAnimator : MonoBehaviour
     {
-        private Animator _animator;
+        public Animator _animator;
         private Character _character;
 
         private void Awake()
@@ -27,7 +27,7 @@ namespace NaughtyCharacter
 
             float jumpSpeed = _character.MovementSettings.JumpSpeed;
             float normVerticalSpeed = _character.VerticalVelocity.y.Remap(-jumpSpeed, jumpSpeed, -1.0f, 1.0f);
-            _animator.SetFloat(CharacterAnimatorParamId.VerticalSpeed, normVerticalSpeed);
+            //_animator.SetFloat(CharacterAnimatorParamId.VerticalSpeed, normVerticalSpeed);
 
             _animator.SetBool(CharacterAnimatorParamId.IsGrounded, _character.IsGrounded);
         }
