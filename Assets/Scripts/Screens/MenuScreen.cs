@@ -10,7 +10,7 @@ public class MenuScreen : MonoBehaviour
     [SerializeField] private GameObject settings;
     [SerializeField] private GameObject howToPlay;
     [SerializeField] private GameObject exit;
-    [SerializeField] private GameObject settingsIcon;
+    //[SerializeField] private GameObject settingsIcon;
 
 
     [Header("-----Settings Items-----")]

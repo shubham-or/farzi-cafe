@@ -11,7 +11,7 @@ public class ScreenManager : MonoBehaviour
 
 
     [Space(20)]
-    public GameObject settingsIcon;
+    //public GameObject settingsIcon;
 
     public static ScreenManager Instance;
     private void Awake()
@@ -41,7 +41,7 @@ public class ScreenManager : MonoBehaviour
         leaderboardScreen.gameObject.SetActive(false);
         gameplayScreen.gameObject.SetActive(false);
 
-        settingsIcon.SetActive(false);
+        //settingsIcon.SetActive(false);
         currentScreen = splashScreen.gameObject;
     }
 

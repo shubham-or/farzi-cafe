@@ -127,7 +127,6 @@ namespace NaughtyCharacter
         {
             _jumpInput = jumpInput;
 
-
             if(jumpInput && !isPlayerInAir)
             {
                 isPlayerInAir = true;

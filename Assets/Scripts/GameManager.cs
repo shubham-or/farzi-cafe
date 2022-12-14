@@ -25,8 +25,8 @@ public class GameManager : MonoBehaviour
 
     public bool hasGameStarted = false;
 
-    public Player_Controller playerController;
-    public Player_Interaction playerInteraction;
+    //public Player_Controller playerController;
+    //public Player_Interaction playerInteraction;
 
     public static GameManager Instance;
     private void Awake() => Instance = this;

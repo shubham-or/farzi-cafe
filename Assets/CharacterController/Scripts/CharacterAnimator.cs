@@ -20,6 +20,12 @@ namespace NaughtyCharacter
             _character = GetComponent<Character>();
         }
 
+
+        private void Start()
+        {
+
+        }
+
         public void UpdateState()
         {
             float normHorizontalSpeed = _character.HorizontalVelocity.magnitude / _character.MovementSettings.MaxHorizontalSpeed;
