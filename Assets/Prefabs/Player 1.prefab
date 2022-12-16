@@ -1738,6 +1738,7 @@ MonoBehaviour:
   _componentIndexCache: 1
   _addedNetworkObject: {fileID: 0}
   _networkObjectCache: {fileID: 0}
+  treasureHuntPointTags: 
   mask:
     serializedVersion: 2
     m_Bits: 8

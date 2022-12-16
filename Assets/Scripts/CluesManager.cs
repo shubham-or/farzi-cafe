@@ -51,18 +51,20 @@ public class CluesManager : MonoBehaviour
 
         ResetData();
         selectedDish = _dish;
-
-        StartCoroutine(Co_Setup());
-    }
-
-    private IEnumerator Co_Setup()
-    {
         Generate_Clues();
-        yield return new WaitForEndOfFrame();
         Set_RandomClues();
-        yield return new WaitForEndOfFrame();
         AssignNextClue();
+        //StartCoroutine(Co_Setup());
     }
+
+    //private IEnumerator Co_Setup()
+    //{
+
+    //    yield return new WaitForEndOfFrame();
+
+    //    yield return new WaitForEndOfFrame();
+
+    //}
 
 
     private void OnDisable() => ResetData();

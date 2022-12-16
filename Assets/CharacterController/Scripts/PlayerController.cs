@@ -7,8 +7,8 @@ namespace NaughtyCharacter
     {
         public float ControlRotationSensitivity = 1.0f;
 
-        private PlayerInputComponent _playerInput;
-        private PlayerCamera _playerCamera;
+        [SerializeField] private PlayerInputComponent _playerInput;
+        [SerializeField] private PlayerCamera _playerCamera;
 
         public override void Init()
         {
@@ -18,6 +18,9 @@ namespace NaughtyCharacter
 
         public override void OnCharacterUpdate()
         {
+            if (_playerInput == null || _playerCamera == null)
+                Init();
+
             UpdateControlRotation();
             Character.SetMovementInput(GetMovementInput());
             Character.SetJumpInput(_playerInput.JumpInput);
@@ -25,6 +28,9 @@ namespace NaughtyCharacter
 
         public override void OnCharacterFixedUpdate()
         {
+            if (_playerInput == null || _playerCamera == null)
+                Init();
+
             _playerCamera.SetPosition(Character.transform.position);
             _playerCamera.SetControlRotation(Character.GetControlRotation());
         }

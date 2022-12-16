@@ -30,7 +30,7 @@ public class ServerInstancing : NetworkBehaviour
     public int localSpawnIndex = 0;
 
     private const int MAX_PLAYERS = 5;
-    private int WAITING_FOR_PLAYERS_DURATION = 3;
+    private int WAITING_FOR_PLAYERS_DURATION = 5;
 
     //[SyncVar]
     //public LocalConnectionState serverState = LocalConnectionState.Stopped;
@@ -60,9 +60,21 @@ public class ServerInstancing : NetworkBehaviour
         }
     }
 
+    public override void OnStartNetwork()
+    {
+        base.OnStartNetwork();
+        currentRoom = null;
+    }
+
+    public override void OnStopNetwork()
+    {
+        base.OnStopNetwork();
+        base.Despawn();
+    }
 
     private void Start()
     {
+        
 #if !UNITY_EDITOR
         if(IsServer)
             WAITING_FOR_PLAYERS_DURATION = 30;
@@ -72,6 +84,8 @@ public class ServerInstancing : NetworkBehaviour
 
     //private void ServerManager_OnServerConnectionState(ServerConnectionStateArgs obj) => serverState = obj.ConnectionState;
 
+
+   
 
     [ServerRpc(RequireOwnership = false)]
     public void QuickRaceConnect(UserData userData, NetworkConnection connection = null, bool isConnectingToLastGame = false)
@@ -102,7 +116,7 @@ public class ServerInstancing : NetworkBehaviour
         room.sceneHandle = currentRoomsRunning.Count + 1;
         room.MaxPlayers = MAX_PLAYERS;
         room.dishData = GameManager.Instance.cluesManager.SelectRandomDish();
-
+        print("Room Dish - " + room.dishData.Dish_Name);
         if (currentRoomsRunning.ContainsKey(room.ID))
             currentRoomsRunning[room.ID] = room;
         else
@@ -115,6 +129,8 @@ public class ServerInstancing : NetworkBehaviour
     private void JoinRoom(NetworkConnection connection, RoomDetails room, UserData userData)
     {
         bool isFirstPlayer = room.userData.Count == 0 ? true : false;
+
+        print("ROOM JOINING - " + room.Name + "- DISH - " + room.dishData.Dish_Name);
 
         // New User
         if (string.IsNullOrWhiteSpace(userData.userDataServer.roomId) && string.IsNullOrWhiteSpace(userData.userDataServer.roomName))
@@ -162,7 +178,6 @@ public class ServerInstancing : NetworkBehaviour
                 room.currentConnections.Add(userData.userDataServer.uid, connection);
             }
         }
-
 
         // Add User to Leaderboard on Server
         UserData _userDataRoom = room.userData[userData.userDataServer.uid];
@@ -314,6 +329,9 @@ public class ServerInstancing : NetworkBehaviour
 
             if (currentRoomsRunning[_roomId].IsGameCompleted())
                 currentRoomsRunning.Remove(_roomId);
+
+
+            currentRoom = null;
         }
     }
 

@@ -42,7 +42,7 @@ public class ClientServerManager : NetworkBehaviour
     [TargetRpc]
     public void SetDataForUser(NetworkConnection connection, RoomDetails _room, LeaderBoardItem _leaderBoard)
     {
-        print("SetRoomAndDishDetailsForUser");
+        print("SetRoomAndDishDetailsForUser -> " + _room.dishData.Dish_Name);
 
         //RoomData roomData = new RoomData()
         //{

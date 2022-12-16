@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class Player_Interaction : NetworkBehaviour
 {
+    public string treasureHuntPointTags;
     public LayerMask mask = 3;
     public float interactionDistance;
     public string Hit_Object;
@@ -31,11 +32,6 @@ public class Player_Interaction : NetworkBehaviour
     public override void OnOwnershipClient(NetworkConnection prevOwner)
     {
         base.OnOwnershipClient(prevOwner);
-    }
-
-    public override void OnStartClient()
-    {
-        base.OnStartClient();
         if (!IsOwner) return;
 
         if (GameManager.Instance)
@@ -45,17 +41,22 @@ public class Player_Interaction : NetworkBehaviour
         }
     }
 
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+    }
+
 
     public override void OnStopClient()
     {
         base.OnStopClient();
         if (!IsOwner) return;
 
-        if (MainCamera)
-        {
-            MainCamera.GetComponent<CameraController>().SetFollowTarget(null);
-            MainCamera.GetComponent<CameraController>().enabled = false;
-        }
+        //if (MainCamera)
+        //{
+        //    MainCamera.GetComponent<CameraController>().SetFollowTarget(null);
+        //    MainCamera.GetComponent<CameraController>().enabled = false;
+        //}
     }
 
     public void Init(Camera _main = null)
@@ -66,11 +67,11 @@ public class Player_Interaction : NetworkBehaviour
 
         if (MainCamera == null) MainCamera = _main == null ? Camera.main : _main;
 
-        if (MainCamera)
-        {
-            MainCamera.GetComponent<CameraController>().SetFollowTarget(transform);
-            MainCamera.GetComponent<CameraController>().enabled = true;
-        }
+        //if (MainCamera)
+        //{
+        //    MainCamera.GetComponent<CameraController>().SetFollowTarget(transform);
+        //    MainCamera.GetComponent<CameraController>().enabled = true;
+        //}
     }
 
 
@@ -114,7 +115,6 @@ public class Player_Interaction : NetworkBehaviour
                 m_UIHandler.Key_E_Popup_Off();
             isHit = false;
             isHitDish = false;
-
         }
 
         if (Input.GetKeyDown(KeyCode.E) && isHit)
@@ -178,4 +178,46 @@ public class Player_Interaction : NetworkBehaviour
             GameManager.Instance.leftdoor.GetComponentInChildren<Animator>().SetBool("IsPlay", false);
     }
 
+
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    Hit_Object = collision.collider.gameObject.name;
+
+    //    if (collision.collider.gameObject.tag == "WayPoint")
+    //    {
+    //        m_UIHandler.Key_E_Popup_On("  Press 'E' ");
+    //        isHit = true;
+    //    }
+    //    else if (collision.collider.gameObject.tag == "Dish")
+    //    {
+    //        m_UIHandler.Key_E_Popup_On("  Press 'D' ");
+    //        isHitDish = true;
+    //    }
+    //    else
+    //    {
+    //        isHit = false;
+    //        isHitDish = false;
+    //    }
+
+    //}
+
+    //private void OnCollisionExit(Collision collision)
+    //{
+    //    Hit_Object = collision.collider.gameObject.name;
+
+    //    if (collision.collider.gameObject.tag == "WayPoint")
+    //    {
+    //        if (!isObjPicking)
+    //            m_UIHandler.Key_E_Popup_Off();
+    //        isHit = false;
+    //        isHitDish = false;
+    //    }
+    //    else if (collision.collider.gameObject.tag == "Dish")
+    //    {
+    //        if (!isObjPicking)
+    //            m_UIHandler.Key_E_Popup_Off();
+    //        isHit = false;
+    //        isHitDish = false;
+    //    }
+    //}
 }
