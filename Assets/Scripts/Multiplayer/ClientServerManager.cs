@@ -113,10 +113,10 @@ public class ClientServerManager : NetworkBehaviour
 
 
 
-    public void Update()
-    {
-        //serverTime = TimeManager.TicksToTime(TickType.Tick);
-    }
+    //public void Update()
+    //{
+    //    //serverTime = TimeManager.TicksToTime(TickType.Tick);
+    //}
 
 
 

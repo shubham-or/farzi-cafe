@@ -29,7 +29,7 @@ public class ScreenManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && GameManager.Instance.hasGameStarted)
             OnClick_SettingsIcon();
     }
 

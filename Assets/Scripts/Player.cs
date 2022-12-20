@@ -1,4 +1,5 @@
 using FishNet;
+using FishNet.Connection;
 using FishNet.Object;
 using UnityEngine;
 
@@ -31,10 +32,9 @@ public class Player : NetworkBehaviour
         GameManager.Event_OnGameResume();
     }
 
-    public override void OnStartClient()
+    public override void OnOwnershipClient(NetworkConnection prevOwner)
     {
-        base.OnStartClient();
-
+        base.OnOwnershipClient(prevOwner);
         if (!IsOwner)
         {
             GetComponent<Player_Interaction>().enabled = false;
@@ -47,11 +47,9 @@ public class Player : NetworkBehaviour
         {
             //GameManager.Instance.playerController = GetComponent<Player_Controller>();
             GameManager.Instance.playerInteraction = GetComponent<Player_Interaction>();
-
             Invoke("InitialisePlayer", 5);
         }
     }
-
 
     public override void OnStopClient()
     {
