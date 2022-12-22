@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class LoginScreen : MonoBehaviour
 {
+    public string data = "";
+
     [Header("-----Login-----")]
     [SerializeField] private TMPro.TextMeshProUGUI loginTitle;
     [SerializeField] private Color loginErrorColor;
@@ -33,6 +35,51 @@ public class LoginScreen : MonoBehaviour
 
 
 
+    #region Web3Auth
+    public void Web3Login_Callback(string _jsonData)
+    {
+        if (string.IsNullOrWhiteSpace(_jsonData))
+        {
+            print("Web3Login_Callback FAILED - " + _jsonData);
+            loginTitle.text = "Login unsuccessful. try again!";
+            loginTitle.color = Color.black;
+        }
+        else
+        {
+            Web3AuthResponse.LoginResponse _response = Newtonsoft.Json.JsonConvert.DeserializeObject<Web3AuthResponse.LoginResponse>(_jsonData);
+            print("Web3Login_Callback - " + _jsonData);
+            GameManager.Instance.SetUserData(new UserData
+            {
+                userDataServer = new UserDataServer
+                {
+                    uid = _response.address,
+                    actualName = _response.data.name,
+                    userName = _response.data.name,
+                    email = _response.data.email,
+                    picture = _response.data.profileImage,
+                    signInMethod = _response.data.typeOfLogin,
+                    score = "0"
+                }
+            });
+            OnSuccess_PostData(_response.address);
+        }
+    }
+
+    public void Web3Logout_Callback(string _jsonData)
+    {
+        if (string.IsNullOrWhiteSpace(_jsonData))
+        {
+            print("Web3Logout_Callback FAILED - " + _jsonData);
+        }
+        else
+        {
+            print("Web3Logout_Callback - " + _jsonData);
+        }
+    }
+    #endregion
+
+
+
     #region Gmail
     public void OnClick_Gmail()
     {
@@ -53,12 +100,17 @@ public class LoginScreen : MonoBehaviour
                 score = "0",
             }
         });
+        print("Gameobject - " + gameObject.name);
 #elif UNITY_WEBGL && !UNITY_EDITOR
+        if (GameManager.Instance.useWeb3)
+            ReactHandler.Web3LoginRequest(gameObject.name, "Web3Login_Callback");
+        else if (GameManager.Instance.useFirebase)
             FirebaseAuthLibrary.SignInWithGoogle(gameObject.name, "OnGmail_Success", "OnGmail_Failed");
 #endif
     }
 
     UserData _tempData = null;
+
     public void OnGmail_Success(string _json)
     {
         print("OnGmail_Success-" + _json);
@@ -148,6 +200,7 @@ public class LoginScreen : MonoBehaviour
     #endregion
 
 
+
     #region Facebook
     public void OnClick_Facebook()
     {
@@ -169,7 +222,10 @@ public class LoginScreen : MonoBehaviour
             }
         });
 #elif UNITY_WEBGL && !UNITY_EDITOR
-        FirebaseAuthLibrary.SignInWithFacebook(gameObject.name, "OnFacebook_Success", "OnFacebook_Failed");
+         if (GameManager.Instance.useWeb3)
+            ReactHandler.Web3LoginRequest(gameObject.name, "Web3Login_Callback");
+        else if (GameManager.Instance.useFirebase)
+            FirebaseAuthLibrary.SignInWithGoogle(gameObject.name, "OnGmail_Success", "OnGmail_Failed");
 #endif
     }
 
@@ -203,6 +259,7 @@ public class LoginScreen : MonoBehaviour
     #endregion
 
 
+
     public void OnSuccess_PostData(string _json)
     {
         print("OnSuccess_PostData- " + _json);
@@ -227,6 +284,7 @@ public class LoginScreen : MonoBehaviour
 
     public void OnClick_Enter()
     {
+        userName.text = GameManager.Instance.GetUserData().userDataServer.userName;
         error.gameObject.SetActive(false);
 #if UNITY_EDITOR  || UNITY_STANDALONE_WIN
         OnSuccess_UpdateUsername("");

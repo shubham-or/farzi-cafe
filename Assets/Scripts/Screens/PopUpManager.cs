@@ -88,9 +88,8 @@ public class PopUpManager : MonoBehaviour
 
     public void OnClick_PlayAgain()
     {
-        //ScreenManager.Instance.settingsIcon.SetActive(false);
         bgImage.enabled = false;
-        bgs.gameObject.SetActive(false);
+        bgs.SetActive(false);
         hh.text = "00";
         mm.text = "00";
         ss.text = "00";
@@ -101,9 +100,8 @@ public class PopUpManager : MonoBehaviour
     public void ShowPopup_Farzified(string _dishName, Texture2D _dishTexture, float _timer)
     {
         GameManager.Event_OnGamePause();
-        //ScreenManager.Instance.settingsIcon.SetActive(true);
         bgImage.enabled = true;
-        bgs.gameObject.SetActive(true);
+        bgs.SetActive(true);
         hh.text = "00";
         mm.text = Timer.GetMinutes(_timer).ToString();
         ss.text = Timer.GetSeconds(_timer).ToString();
@@ -123,7 +121,7 @@ public class PopUpManager : MonoBehaviour
         itemTitle.text = $"You Found\n{_clue.ingredient}";
         item.texture = _clue.enabledTexture;
         bgImage.enabled = false;
-        bgs.gameObject.SetActive(true);
+        bgs.SetActive(true);
         foundItem.SetActive(true);
         //ScreenManager.Instance.settingsIcon.SetActive(true);
 
@@ -159,6 +157,7 @@ public class PopUpManager : MonoBehaviour
         //GameManager.Instance.playerInteraction.enabled = false;
         yield return new WaitForSeconds(3);
         HideReadyToServe();
+        yield return new WaitForEndOfFrame();
         ShowPopup_Farzified(_dishName, _dishTexture, _timer);
     }
     #endregion

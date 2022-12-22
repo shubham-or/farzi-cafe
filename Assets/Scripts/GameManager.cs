@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
 {
     public string gamePlaySceneName = "GamePlay";
     public bool useFirebase = false;
+    public bool useWeb3 = false;
     public bool isGameplayPaused = false;
 
     [Header("-----References-----")]
@@ -83,7 +84,8 @@ public class GameManager : MonoBehaviour
 
     public void StopGamePlay()
     {
-        UpdateRoomDetailsOnFirebase(true);
+        if (GameManager.Instance.useFirebase)
+            UpdateRoomDetailsOnFirebase(true);
         ServerInstancing.Instance.UpdateUserTimeOnServerLeaderboard(GetUserData().userDataServer.uid, GetUserData().userDataServer.roomId);
         ServerInstancing.Instance.GetLeaderboard(GetUserData().userDataServer.uid, GetUserData().userDataServer.roomId);
         ServerInstancing.Instance.StopGame(GetUserData(), GetUserData().userDataServer.roomId, gamePlaySceneName);

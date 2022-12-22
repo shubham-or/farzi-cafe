@@ -1,0 +1,381 @@
+{
+	"info": {
+		"_postman_id": "573aee50-abe0-4627-91d0-c4f7051e3e46",
+		"name": "Restaurant",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7976722"
+	},
+	"item": [
+		{
+			"name": "Get",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:6000",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "6000"
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Restaurants",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:6000/getAllRestaurants",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "6000",
+					"path": [
+						"getAllRestaurants"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Minted Coupons",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://restaurant-backend.onerare.io/getAllMintedCoupons/0x9D7117a07fca9F22911d379A9fd5118A5FA4F448",
+					"protocol": "https",
+					"host": [
+						"restaurant-backend",
+						"onerare",
+						"io"
+					],
+					"path": [
+						"getAllMintedCoupons",
+						"0x9D7117a07fca9F22911d379A9fd5118A5FA4F448"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Coupons",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://restaurant-backend.onerare.io/getAllCoupons/0xebb825f034519927d2c54171d36b4801def2a6b1",
+					"protocol": "https",
+					"host": [
+						"restaurant-backend",
+						"onerare",
+						"io"
+					],
+					"path": [
+						"getAllCoupons",
+						"0xebb825f034519927d2c54171d36b4801def2a6b1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Coupon Winners",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://restaurant-backend.onerare.io/getCouponWinners/5",
+					"protocol": "https",
+					"host": [
+						"restaurant-backend",
+						"onerare",
+						"io"
+					],
+					"path": [
+						"getCouponWinners",
+						"5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Coupon Details",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://restaurant-backend.onerare.io/getCouponDetails/5",
+					"protocol": "https",
+					"host": [
+						"restaurant-backend",
+						"onerare",
+						"io"
+					],
+					"path": [
+						"getCouponDetails",
+						"5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "assign Winners",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"couponId\": \"16\",\n    \"winners\": [\n        \"0x778278706c441bb8bd08c0cd37cc88acc29ea99e\",\n        \"0x5ce23e8f2bcbf9cf2bf68842adf740fdf6c0a54d\",\n        \"0x8fd267e8a1142d970649b5920fd09b6b51ddda7e\",\n        \"0xa48774c17e9e1ef63abd2ce5e76c1e62469909ed\",\n        \"0x2d8dd11b82b90082b8d654b05eae2d95d75ad0ac\",\n        \"0x1153e31b1a7d46ffd1ed4c577be915e5823fa0fb\",\n        \"0xe62af025ace7a4b0d01f575c7f3c288fbf70f451\",\n        \"0x0ef1b671756259bbc0e8d03937de8643f92708b3\",\n        \"0xa60119f25faafaa9b93aaf81070face1ea5d296d\",\n        \"0x52426c8065974821e99fa3c9aad73e47b9f1d6fc\"\n    ],\n    \"minterAddress\":\"0x9d7117a07fca9f22911d379a9fd5118a5fa4f448\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://restaurant-backend.onerare.io/assignWinners",
+					"protocol": "https",
+					"host": [
+						"restaurant-backend",
+						"onerare",
+						"io"
+					],
+					"path": [
+						"assignWinners"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete Coupon",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"couponId\": \"5\",\n    \"minterAddress\":\"0x6e2a98e14961c9619768d794b636cad486688754\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://restaurant-backend.onerare.io/deleteCoupon",
+					"protocol": "https",
+					"host": [
+						"restaurant-backend",
+						"onerare",
+						"io"
+					],
+					"path": [
+						"deleteCoupon"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update expiry date",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"couponId\": \"4\",\n    \"minterAddress\":\"0xa2e3ed8fadd143c3a96f6d43c92d32336b355b9a\",\n    \"expiryDate\":237493\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:6000/updateExpiryDate",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "6000",
+					"path": [
+						"updateExpiryDate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "assign winner",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"nftId\": \"4\",\n    \"winnerAddress\":\"0xa2e3ed8fadd143c3a96f6d43c92d32336b355b9a\",\n    \"winnerEmail\": \"abc@xyz.com\",\n    \"time\": 50\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://restaurant-backend.onerare.io/assignWinner",
+					"protocol": "https",
+					"host": [
+						"restaurant-backend",
+						"onerare",
+						"io"
+					],
+					"path": [
+						"assignWinner"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Redeem",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"couponId\": \"17\",\n    \"userAddress\": \"0x2f5431e394df5349063c5b2c6cb473ab519b713d\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:6000/redeem",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "6000",
+					"path": [
+						"redeem"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Confirm",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"couponId\": \"18\",\n    \"userAddress\": \"0xeCD79B183036A692f050cB677cdc2fca39C97F9b\",\n    \"minterAddress\": \"0xF152078090f1DDE75eacC72ED2CF5E073b04E2C4\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://restaurant-backend.onerare.io/confirm",
+					"protocol": "https",
+					"host": [
+						"restaurant-backend",
+						"onerare",
+						"io"
+					],
+					"path": [
+						"confirm"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Withdraw",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"couponId\": \"2\",\n    \"userAddress\": \"0xf152078090f1dde75eacc72ed2cf5e073b04e2c4\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://restaurant-backend.onerare.io/withdraw",
+					"protocol": "https",
+					"host": [
+						"restaurant-backend",
+						"onerare",
+						"io"
+					],
+					"path": [
+						"withdraw"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

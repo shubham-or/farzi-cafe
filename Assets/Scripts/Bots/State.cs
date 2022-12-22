@@ -24,8 +24,8 @@ public class State
     protected State nextState;
     protected NavMeshAgent agent;
 
-    float visDist = 10.0f;
-    float visAngle = 30.0f;
+    //float visDist = 10.0f;
+    //float visAngle = 30.0f;
     float destOffset = 2.0f;
 
     public State(NavMeshAgent _agent, Animator _anim, AI _player)

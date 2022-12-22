@@ -28,7 +28,7 @@ public class JsonUtility_DishData : MonoBehaviour
     {
         DishData CurrentRoomData = new DishData();
         TextAsset textAsset = Resources.Load<TextAsset>(FileName);
-        print("textAsset : " + textAsset.text);
+        //print("textAsset : " + textAsset.text);
         //string json = File.ReadAllText(textAsset.text);
         CurrentRoomData = JsonConvert.DeserializeObject<DishData>(textAsset.text);
         return CurrentRoomData;

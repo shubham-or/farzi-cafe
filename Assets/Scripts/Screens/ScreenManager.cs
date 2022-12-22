@@ -35,8 +35,8 @@ public class ScreenManager : MonoBehaviour
 
     public void Init()
     {
-        splashScreen.gameObject.SetActive(true);
-        loginScreen.gameObject.SetActive(false);
+        splashScreen.gameObject.SetActive(false);
+        loginScreen.gameObject.SetActive(true);
         menuScreen.gameObject.SetActive(false);
         leaderboardScreen.gameObject.SetActive(false);
         gameplayScreen.gameObject.SetActive(false);

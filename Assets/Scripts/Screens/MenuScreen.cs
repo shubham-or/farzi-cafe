@@ -150,7 +150,10 @@ public class MenuScreen : MonoBehaviour
 
     public void OnClick_ExitYes()
     {
-        Application.Quit();
+#if UNITY_WEBGL && !UNITY_EDITOR
+
+        ReactHandler.QuitGame();
+#endif
     }
 
 }
