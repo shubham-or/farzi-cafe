@@ -87,9 +87,9 @@ MonoBehaviour:
     CertificatePassword: 
     SslProtocol: 0
   _mtu: 1023
-  _port: 8080
+  _port: 8008
   _maximumClients: 2000
-  _clientAddress: localhost
+  _clientAddress: 64.227.156.68
 --- !u!1001 &2130063410
 PrefabInstance:
   m_ObjectHideFlags: 0

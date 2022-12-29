@@ -161,7 +161,6 @@ public class LoginScreen : MonoBehaviour
                     score = _tempData.userDataServer.score,
                     roomId = "",
                     roomName = "",
-                    clientId = "",
                     lastUpdated = System.DateTime.Now.ToString()
                 }
             });

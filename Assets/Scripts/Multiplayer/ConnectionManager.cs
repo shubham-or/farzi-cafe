@@ -9,7 +9,7 @@ public class ConnectionManager : MonoBehaviour
     [SerializeField] private Bayou bayou;
     private string ip_aws = "43.204.232.118";
     private string ip_digitalocean_live = "142.93.211.48";
-    private string ip_digitalocean_dev = "146.190.35.150";
+    private string ip_digitalocean_testing = "64.227.156.68";
 
     [Header("-----DEBUG-----")]
     [SerializeField] private string IP;
@@ -20,10 +20,20 @@ public class ConnectionManager : MonoBehaviour
     public enum Server { LocalHost, DigitalOcean_Dev, DigitalOcean_Live, AWS };
     public enum Connection { Client, Server, Both, None };
 
-    private void Awake() => bayou = InstanceFinder.NetworkManager.gameObject.GetComponent<Bayou>();
 
-    void Start() => Init();
+    public static ConnectionManager Instance;
+    private void Awake()
+    {
+        Instance = this;
+        bayou = InstanceFinder.NetworkManager.gameObject.GetComponent<Bayou>();
 
+    }
+    void Start()
+    {
+        if (connection == Connection.Server) InstanceFinder.ServerManager.StartConnection();
+        else if (connection == Connection.Client) InstanceFinder.ClientManager.StartConnection();
+        //Init();
+    }
     [ContextMenu("Init")]
     public void Init()
     {
@@ -36,8 +46,8 @@ public class ConnectionManager : MonoBehaviour
                 break;
 
             case Server.DigitalOcean_Dev:
-                PORT = 8800;
-                IP = ip_digitalocean_dev;
+                PORT = 8008;
+                IP = ip_digitalocean_testing;
                 break;
 
             case Server.DigitalOcean_Live:
@@ -87,5 +97,15 @@ public class ConnectionManager : MonoBehaviour
         }
 
         print($"PORT -> {PORT}  |  IP -> {IP}  |  SERVER -> {CONNECTION}");
+    }
+
+
+    public void StartLocalHost()
+    {
+        print("Starting LOCAlHOST Connections");
+        //bayou.SetPort(8080);
+        //bayou.SetClientAddress("localhost");
+        InstanceFinder.ServerManager.StartConnection();
+        InstanceFinder.ClientManager.StartConnection();
     }
 }

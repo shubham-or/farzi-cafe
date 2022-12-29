@@ -3122,8 +3122,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _componentIndexCache: 1
-  _addedNetworkObject: {fileID: 3066186518633742841, guid: 950bf4ecc1867934184b4a3bbb3493b8, type: 3}
-  _networkObjectCache: {fileID: 3066186518633742841, guid: 950bf4ecc1867934184b4a3bbb3493b8, type: 3}
+  _addedNetworkObject: {fileID: 1075578222}
+  _networkObjectCache: {fileID: 1075578222}
+  treasureHuntPointTags: 
   mask:
     serializedVersion: 2
     m_Bits: 8
@@ -3145,6 +3146,7 @@ MonoBehaviour:
   <ComponentIndex>k__BackingField: 0
   _networkBehaviours:
   - {fileID: 1075578223}
+  - {fileID: -699366744728399308}
   - {fileID: 1075578226}
   - {fileID: 1075578225}
   <ParentNetworkObject>k__BackingField: {fileID: 0}
@@ -3171,7 +3173,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2836e36774ca1c4bbbee976e17b649c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 1
+  _componentIndexCache: 2
   _addedNetworkObject: {fileID: 1075578222}
   _networkObjectCache: {fileID: 1075578222}
   _synchronizeParent: 0
@@ -3213,7 +3215,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8cac635f24954048aad3a6ff9110beb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 2
+  _componentIndexCache: 3
   _addedNetworkObject: {fileID: 1075578222}
   _networkObjectCache: {fileID: 1075578222}
   IgnoredParameters: []

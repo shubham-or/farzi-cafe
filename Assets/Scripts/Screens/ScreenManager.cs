@@ -56,21 +56,31 @@ public class ScreenManager : MonoBehaviour
 
     public void OnClick_SettingsIcon()
     {
-        if (GameManager.Instance.isGameplayPaused)
+        if (Application.isEditor)
         {
-            menuScreen.gameObject.SetActive(false);
-            splashScreen.gameObject.SetActive(false);
-            loginScreen.gameObject.SetActive(false);
-            //settingsIcon.SetActive(true);
-            GameManager.Event_OnGameResume();
+            if (GameManager.Instance.isGameplayPaused)
+                GameManager.Event_OnGameResume();
+            else
+                GameManager.Event_OnGamePause();
         }
         else
         {
-            menuScreen.gameObject.SetActive(true);
-            splashScreen.gameObject.SetActive(false);
-            loginScreen.gameObject.SetActive(false);
-            //settingsIcon.SetActive(false);
-            GameManager.Event_OnGamePause();
+            if (GameManager.Instance.isGameplayPaused)
+            {
+                menuScreen.gameObject.SetActive(false);
+                splashScreen.gameObject.SetActive(false);
+                loginScreen.gameObject.SetActive(false);
+                //settingsIcon.SetActive(true);
+                GameManager.Event_OnGameResume();
+            }
+            else
+            {
+                menuScreen.gameObject.SetActive(true);
+                splashScreen.gameObject.SetActive(false);
+                loginScreen.gameObject.SetActive(false);
+                //settingsIcon.SetActive(false);
+                GameManager.Event_OnGamePause();
+            }
         }
 
 

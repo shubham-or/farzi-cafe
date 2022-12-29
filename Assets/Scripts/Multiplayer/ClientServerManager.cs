@@ -1,17 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using FirstGearGames.LobbyAndWorld.Lobbies.JoinCreateRoomCanvases;
 using UnityEngine;
 using FishNet.Connection;
 using FishNet.Object;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine.Networking;
-using FishNet;
 using System.Linq;
-using FishNet.Object.Synchronizing;
-using FishNet.Transporting;
 
 public class ClientServerManager : NetworkBehaviour
 {
@@ -32,6 +28,12 @@ public class ClientServerManager : NetworkBehaviour
     private void Start()
     {
 
+    }
+
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+        print("CLIENT STARTED----------");
     }
 
 
@@ -60,7 +62,6 @@ public class ClientServerManager : NetworkBehaviour
 
         //UserMetaData.currentRoom = _room;
 
-        GameManager.Instance.SetClientId(connection.ClientId.ToString());
         GameManager.Instance.SetRoomDetails(_room);
         GameManager.Instance.SetDishData(_room.dishData);
         GameManager.Instance.SetLeaderboardData(_leaderBoard);

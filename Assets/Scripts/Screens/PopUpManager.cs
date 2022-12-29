@@ -222,11 +222,30 @@ public class PopUpManager : MonoBehaviour
         }
         else
         {
-            crossWaitingPopup.SetActive(true);
-            waitingForPlayersTimer.text = "Couldn't establish a connection!\nPlease try again.";
-            InstanceFinder.ClientManager.StartConnection();
+
+            ConnectionManager.Instance.StartLocalHost();
+            StartCoroutine(StartLocalGame());
+            //crossWaitingPopup.SetActive(true);
+            //waitingForPlayersTimer.text = "Couldn't establish a connection!\nPlease try again.";
+            //InstanceFinder.ClientManager.StartConnection();
         }
     }
+
+    int timeout = 10;
+
+    private IEnumerator StartLocalGame()
+    {
+        timeout--;
+        if (timeout < 0)
+            yield break;
+
+        yield return new WaitForSeconds(2);
+        if (InstanceFinder.ClientManager.Started && InstanceFinder.ServerManager.Started)
+            ServerInstancing.Instance.QuickRaceConnect(GameManager.Instance.GetUserData(), InstanceFinder.ClientManager.Connection);
+        else
+            StartCoroutine(StartLocalGame());
+    }
+
 
     public void UpdateWaitingTime(float _timeLeft)
     {

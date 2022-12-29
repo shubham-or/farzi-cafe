@@ -1,18 +1,28 @@
-using FirstGearGames.LobbyAndWorld.Lobbies.JoinCreateRoomCanvases;
 using System;
+using UnityEngine;
 
-[System.Serializable]
+[Serializable]
 public class UserData
 {
+    [Header("---BasicDetails---")]
     public bool isBot = false;
     public bool hasCompleted = false;
+
+    [Space(10)]
+    [Header("---UserData---")]
     public UserDataServer userDataServer = new UserDataServer();
+
+    [Space(10)]
+    [Header("---DishData---")]
     public DishData.Dish dishData = new DishData.Dish();
+
+    [Space(10)]
+    [Header("---LeaderboardData---")]
     public LeaderBoardItem leaderBoard = new LeaderBoardItem();
 
     public UserData CreateBotData()
     {
-        userDataServer.uid = Guid.NewGuid().ToString();
+        userDataServer.uid = GameManager.GetUnitueID();
         userDataServer.actualName = "Player_" + userDataServer.uid;
         userDataServer.userName = " Player_" + UnityEngine.Random.Range(99, 999999);
         userDataServer.signInMethod = "";
@@ -24,19 +34,29 @@ public class UserData
 
     public void SetDishData(DishData.Dish _dishData) => dishData = _dishData;
     public void SetLeaderboardData(LeaderBoardItem _leaderboard) => leaderBoard = _leaderboard;
-    public void SetClientId(string _clientId) => userDataServer.clientId = _clientId;
 
     public void SetRoomDetails(RoomDetails roomDetails)
     {
         userDataServer.roomId = roomDetails.ID;
         userDataServer.roomName = roomDetails.Name;
     }
-
-
-
 }
 
-[System.Serializable]
+
+[Serializable]
+public class LeaderBoardItem
+{
+    public string id;
+    public string rank;
+    public string userName;
+    public string dishName;
+    public int currentIngredientIndex;
+    public float time = 1800; // 30mins
+    public bool isBot = false;
+}
+
+
+[Serializable]
 public class UserDataServer
 {
     public string uid;
@@ -51,6 +71,5 @@ public class UserDataServer
 
     public string roomId;
     public string roomName;
-    public string clientId;
 }
 

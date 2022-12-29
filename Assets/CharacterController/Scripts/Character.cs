@@ -77,11 +77,14 @@ namespace NaughtyCharacter
 
         private void Awake()
         {
-            Controller.Init();
-            Controller.Character = this;
-
             _characterController = GetComponent<CharacterController>();
             _characterAnimator = GetComponent<CharacterAnimator>();
+        }
+
+        public void Init()
+        {
+            Controller.Init();
+            Controller.Character = this;
         }
 
         private void Update()
@@ -122,12 +125,12 @@ namespace NaughtyCharacter
             _movementInput = movementInput;
             _hasMovementInput = hasMovementInput;
         }
-        
+
         public void SetJumpInput(bool jumpInput)
         {
             _jumpInput = jumpInput;
 
-            if(jumpInput && !isPlayerInAir)
+            if (jumpInput && !isPlayerInAir)
             {
                 isPlayerInAir = true;
                 _characterAnimator._animator.SetTrigger("IsJump");

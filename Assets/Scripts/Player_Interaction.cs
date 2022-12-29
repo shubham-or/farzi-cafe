@@ -13,7 +13,7 @@ public class Player_Interaction : NetworkBehaviour
 
     private UI_Handler m_UIHandler;
     private CluesManager m_CluesManager;
-    private Camera MainCamera;
+    [SerializeField]private Camera MainCamera;
 
     bool isHit;
     bool isHitDish;
@@ -62,8 +62,6 @@ public class Player_Interaction : NetworkBehaviour
     public void Init(Camera _main = null)
     {
         if (!IsOwner) return;
-
-        gameObject.name = InstanceFinder.ClientManager.Connection.ClientId.ToString();
 
         if (MainCamera == null) MainCamera = _main == null ? Camera.main : _main;
 

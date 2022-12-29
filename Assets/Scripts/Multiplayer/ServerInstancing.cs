@@ -2,27 +2,19 @@ using FishNet;
 using FishNet.Managing;
 using FishNet.Connection;
 using FishNet.Managing.Scened;
-using FishNet.Managing.Object;
 using FishNet.Object;
-using FishNet.Transporting;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using FirstGearGames.LobbyAndWorld.Lobbies;
-using FirstGearGames.LobbyAndWorld.Lobbies.JoinCreateRoomCanvases;
 using FishNet.Managing.Timing;
-using Newtonsoft.Json;
 using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
-using FishNet.Object.Synchronizing;
 
 public class ServerInstancing : NetworkBehaviour
 {
-    [SerializeField] private GameObject playerNetworkPrefab;
-    [SerializeField] private Vector3 playerPosition;
+    public GameObject playerNetworkPrefab;
+    public Vector3 playerPosition;
 
     public Dictionary<string, RoomDetails> currentRoomsRunning = new Dictionary<string, RoomDetails>();
     RoomDetails currentRoom;
@@ -63,7 +55,14 @@ public class ServerInstancing : NetworkBehaviour
     public override void OnStartNetwork()
     {
         base.OnStartNetwork();
+        print("NETWORK STARTED-----------------");
         currentRoom = null;
+    }
+
+    public override void OnStartServer()
+    {
+        base.OnStartServer();
+        print("SERVER STARTED-----------------");
     }
 
     public override void OnStopNetwork()
@@ -74,7 +73,7 @@ public class ServerInstancing : NetworkBehaviour
 
     private void Start()
     {
-        
+
 #if !UNITY_EDITOR
         if(IsServer)
             WAITING_FOR_PLAYERS_DURATION = 30;
@@ -85,7 +84,7 @@ public class ServerInstancing : NetworkBehaviour
     //private void ServerManager_OnServerConnectionState(ServerConnectionStateArgs obj) => serverState = obj.ConnectionState;
 
 
-   
+
 
     [ServerRpc(RequireOwnership = false)]
     public void QuickRaceConnect(UserData userData, NetworkConnection connection = null, bool isConnectingToLastGame = false)
@@ -335,7 +334,6 @@ public class ServerInstancing : NetworkBehaviour
         }
     }
 
-    [Server]
     public float GetRoomTime(string _roomID)
     {
         if (currentRoomsRunning.ContainsKey(_roomID)) return currentRoomsRunning[_roomID].roomTime;

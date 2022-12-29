@@ -1,10 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Linq;
-using FishNet.Connection;
-using FishNet.Object;
-using FishNet;
 
 public class LeaderboardScreen : MonoBehaviour
 {
@@ -68,15 +64,4 @@ public class LeaderboardScreen : MonoBehaviour
 
 
 
-}
-
-[System.Serializable]
-public class LeaderBoardItem
-{
-    public string id;
-    public string rank;
-    public string userName;
-    public string dishName = "-";
-    public float time = 1000;
-    public bool isBot = false;
 }

@@ -1,10 +1,12 @@
 using FishNet;
 using FishNet.Connection;
 using FishNet.Object;
+using NaughtyCharacter;
 using UnityEngine;
 
 public class Player : NetworkBehaviour
 {
+    public bool isOwner = false;
 
     private void Start()
     {
@@ -15,17 +17,14 @@ public class Player : NetworkBehaviour
     private void InitialisePlayer()
     {
         gameObject.name = InstanceFinder.ClientManager.Connection.ClientId.ToString();
-        //GetComponent<Player_Controller>().Init(GameplayScene.Instance.mainCamera);
-        //GetComponent<Player_Controller>().enabled = true;
 
         GetComponent<CharacterController>().enabled = true;
-        GetComponent<NaughtyCharacter.Character>().enabled = true;
-        GetComponent<NaughtyCharacter.CharacterAnimator>().enabled = true;
+        GetComponent<Character>().Init();
+        GetComponent<Character>().enabled = true;
+        GetComponent<CharacterAnimator>().enabled = true;
 
         GetComponent<Player_Interaction>().Init();
         GetComponent<Player_Interaction>().enabled = true;
-        //GameManager.Instance.UpdateRoomDetailsOnFirebase();
-
 
         UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(gameObject, GameplayScene.Instance.gameObject.scene);
         GameManager.Event_OnGameStarts();
@@ -37,15 +36,17 @@ public class Player : NetworkBehaviour
         base.OnOwnershipClient(prevOwner);
         if (!IsOwner)
         {
+            isOwner = false;
+            GameManager.Instance.player = null;
             GetComponent<Player_Interaction>().enabled = false;
             GetComponent<CharacterController>().enabled = false;
-            GetComponent<NaughtyCharacter.Character>().enabled = false;
-            GetComponent<NaughtyCharacter.CharacterAnimator>().enabled = false;
-            enabled = false;
+            GetComponent<Character>().enabled = false;
+            GetComponent<CharacterAnimator>().enabled = false;
         }
         else
         {
-            //GameManager.Instance.playerController = GetComponent<Player_Controller>();
+            isOwner = true;
+            GameManager.Instance.player = this;
             GameManager.Instance.playerInteraction = GetComponent<Player_Interaction>();
             Invoke("InitialisePlayer", 5);
         }
@@ -59,7 +60,7 @@ public class Player : NetworkBehaviour
 
         GameManager.Instance.hasGameStarted = false;
         print("Player Despawn");
-        InstanceFinder.ServerManager.Despawn(gameObject);
+        Despawn();
 
     }
 

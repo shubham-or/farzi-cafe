@@ -157,6 +157,8 @@ public class CluesManager : MonoBehaviour
 
 
         currentClueIndex++;
+
+
         if (currentClueIndex == clues.Count)
         {
             print("Found all Ingredients... And claim dish");
@@ -173,6 +175,7 @@ public class CluesManager : MonoBehaviour
         textCluePosName.text = chosenCluePoints[currentClueIndex].gameObject.name;
         ScreenManager.Instance.gameplayScreen.ActivateNextItem(currentClue, currentClueIndex - 1 >= 0 ? clues[currentClueIndex - 1] : null);
 
+        GameManager.Instance.GetUserData().leaderBoard.currentIngredientIndex = currentClueIndex;
     }
     #endregion
 

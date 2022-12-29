@@ -1,10 +1,8 @@
-using FirstGearGames.LobbyAndWorld.Lobbies.JoinCreateRoomCanvases;
 using FishNet.Managing.Timing;
-using FishNet.Object.Synchronizing;
-using FishNet.Transporting;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,6 +10,8 @@ public class GameManager : MonoBehaviour
     public bool useFirebase = false;
     public bool useWeb3 = false;
     public bool isGameplayPaused = false;
+    public bool hasGameStarted = false;
+
 
     [Header("-----References-----")]
     public TimeManager timeManager;
@@ -19,23 +19,39 @@ public class GameManager : MonoBehaviour
     public Timer timer;
     public CluesManager cluesManager;
     public GameObject leftdoor, rightdoor;
+    public Player player;
+    public Player_Interaction playerInteraction;
 
     [Header("-----User Data-----")]
     [SerializeField] private UserData userData;
+    [Space(10)]
     [SerializeField] private List<UserData> botsData = new List<UserData>();
 
-    public bool hasGameStarted = false;
-
-    //public Player_Controller playerController;
-    public Player_Interaction playerInteraction;
+    private PlayerDataHandler playerDataHandler;
 
     public static GameManager Instance;
-    private void Awake() => Instance = this;
-
+    private void Awake()
+    {
+        Instance = this;
+        playerDataHandler = GetComponent<PlayerDataHandler>();
+    }
     void Start()
     {
         OnGamePause += Callback_OnGamePause;
         OnGameResume += Callback_OnGameResume;
+    }
+
+
+    private void Update()
+    {
+
+    }
+
+
+    [ContextMenu("SaveData")]
+    public void SaveData()
+    {
+        playerDataHandler.SaveData(userData);
     }
 
     private void OnDestroy()
@@ -51,9 +67,6 @@ public class GameManager : MonoBehaviour
 
     public void SetDishData(DishData.Dish _dishData) => userData.dishData = _dishData;
     public void SetLeaderboardData(LeaderBoardItem _leaderboard) => userData.leaderBoard = _leaderboard;
-
-    public void SetClientId(string _clientId) => userData.userDataServer.clientId = _clientId;
-    public string GetClientId() => userData.userDataServer.clientId;
 
     public void SetRoomDetails(RoomDetails roomDetails)
     {
@@ -81,6 +94,86 @@ public class GameManager : MonoBehaviour
 #endif
     }
 
+    #region Local Game Stuff
+    public void StartLocalGame()
+    {
+        // Load Scene
+        SceneManager.LoadSceneAsync(gamePlaySceneName);
+
+
+        // Set Data
+        RoomDetails _room = new RoomDetails()
+        {
+            ID = GetUnitueID(),
+            Name = "FarziCafe_LocalHost" + UnityEngine.Random.Range(1000, 10000).ToString(),
+            sceneHandle = 1,
+            MaxPlayers = 5,
+            dishData = cluesManager.SelectRandomDish()
+        };
+        SetRoomDetails(_room);
+        SetDishData(_room.dishData);
+        SetLeaderboardData(new LeaderBoardItem()
+        {
+            id = userData.userDataServer.uid,
+            userName = userData.userDataServer.userName,
+            rank = "1",
+            dishName = userData.dishData.Dish_Name,
+            isBot = false
+        });
+        cluesManager.Setup(_room.dishData);
+
+
+        //Instantiate Player
+        SpawnPlayer(ServerInstancing.Instance.playerNetworkPrefab, ServerInstancing.Instance.playerPosition);
+
+
+        // Instantiate Bots
+        //int botsCount = _room.MaxPlayers - _room.userData.Count;
+        //for (int i = 0; i < botsCount; i++)
+        //{
+        //    UserData _botData = new UserData().CreateBotData();
+        //    LeaderBoardItem _leaderBoardBot = new LeaderBoardItem()
+        //    {
+        //        id = _botData.userDataServer.uid,
+        //        userName = _botData.userDataServer.userName,
+        //        rank = "5",
+        //        dishName = _room.dishData.Dish_Name,
+        //        isBot = true
+        //    };
+
+        //    // Set Details For User
+        //    _botData.SetRoomDetails(_room);
+        //    _botData.SetDishData(_room.dishData);
+        //    _botData.SetLeaderboardData(_leaderBoardBot);
+
+
+        //    // Add Details to Room
+        //    _room.userData.Add(_botData.userDataServer.uid, _botData);
+        //    _room.userData[_botData.userDataServer.uid].leaderBoard = _leaderBoardBot;
+        //    print(_botData.userDataServer.userName + "-Bot User Data added in Room-" + _room.Name);
+        //}
+
+        //ClientServerManager.Instance.GenerateBot(_conn.Value, _user.Value);
+
+
+        // Start Gameplay
+        //ClientServerManager.Instance.StartGamePlay(item.Value);
+
+    }
+
+    private GameObject SpawnPlayer(GameObject _playerPrefab, Vector3 _defaultPosition)
+    {
+        //Vector3 _position = _defaultPosition;
+        //float _multiplier = (connection.ClientId + 1) * 0.04f;
+        //_position.x = _position.x + playerPosition.x * _multiplier;
+        //_position.z = _position.z + playerPosition.z * _multiplier;
+        //print("Player Spawned at Position - " + _position);
+
+        return Instantiate(_playerPrefab, _defaultPosition, Quaternion.identity);
+
+        //return _player.GetComponent<NetworkObject>();
+    }
+    #endregion
 
     public void StopGamePlay()
     {
@@ -158,5 +251,5 @@ public class GameManager : MonoBehaviour
     public static event Action OnGameResume;
     public static void Event_OnGameResume() => OnGameResume?.Invoke();
 
-
+    public static string GetUnitueID() => DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
 }
