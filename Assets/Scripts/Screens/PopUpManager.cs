@@ -8,7 +8,6 @@ using UnityEngine.UI;
 public class PopUpManager : MonoBehaviour
 {
     [Header("-----Pop Ups-----")]
-    [SerializeField] private GameObject bgs;
     [SerializeField] private GameObject facts;
     [SerializeField] private GameObject farzified;
     [SerializeField] private GameObject foundItem;
@@ -89,7 +88,6 @@ public class PopUpManager : MonoBehaviour
     public void OnClick_PlayAgain()
     {
         bgImage.enabled = false;
-        bgs.SetActive(false);
         hh.text = "00";
         mm.text = "00";
         ss.text = "00";
@@ -101,11 +99,10 @@ public class PopUpManager : MonoBehaviour
     {
         GameManager.Event_OnGamePause();
         bgImage.enabled = true;
-        bgs.SetActive(true);
         hh.text = "00";
         mm.text = Timer.GetMinutes(_timer).ToString();
         ss.text = Timer.GetSeconds(_timer).ToString();
-        GameManager.Instance.GetUserData().leaderBoard.time = _timer;
+        GameManager.Instance.SetGameTime(_timer);
         GameManager.Instance.StopGamePlay();
         farzified.SetActive(true);
     }
@@ -121,7 +118,6 @@ public class PopUpManager : MonoBehaviour
         itemTitle.text = $"You Found\n{_clue.ingredient}";
         item.texture = _clue.enabledTexture;
         bgImage.enabled = false;
-        bgs.SetActive(true);
         foundItem.SetActive(true);
         //ScreenManager.Instance.settingsIcon.SetActive(true);
 
@@ -132,7 +128,6 @@ public class PopUpManager : MonoBehaviour
     {
         foundItem.SetActive(false);
         bgImage.enabled = false;
-        bgs.gameObject.SetActive(false);
         //ScreenManager.Instance.settingsIcon.SetActive(false);
 
         GameManager.Event_OnGameResume();
@@ -146,15 +141,14 @@ public class PopUpManager : MonoBehaviour
     #region Dish Found
     private void OnDishFoundCallback(string _dishName, Texture2D _dishTexture, float _timer)
     {
-        StartCoroutine(Co_OnDishFound(_dishName, _dishTexture, _timer));
+        ShowPopup_Farzified(_dishName, _dishTexture, _timer);
+        //StartCoroutine(Co_OnDishFound(_dishName, _dishTexture, _timer));
     }
 
     private IEnumerator Co_OnDishFound(string _dishName, Texture2D _dishTexture, float _timer)
     {
         //ScreenManager.Instance.settingsIcon.SetActive(false);
         ShowPopup_ReadyToServe(_dishName, _dishTexture);
-        //GameManager.Instance.playerController.enabled = false;
-        //GameManager.Instance.playerInteraction.enabled = false;
         yield return new WaitForSeconds(3);
         HideReadyToServe();
         yield return new WaitForEndOfFrame();
@@ -167,18 +161,16 @@ public class PopUpManager : MonoBehaviour
     public void ShowPopup_ReadyToServe(string _dishName, Texture2D _dishTexture)
     {
         GameManager.Event_OnGamePause();
-        bgs.SetActive(true);
         bgImage.enabled = false;
         dishReadyToServe.texture = _dishTexture;
         dishNameReadyToServe.text = _dishName;
         readyToServe.SetActive(true);
 
-        Invoke("HideReadyToServe", 4);
+        Invoke("HideReadyToServe", 3);
     }
 
     public void HideReadyToServe()
     {
-        bgs.SetActive(false);
         readyToServe.SetActive(false);
         GameManager.Event_OnGameResume();
     }
@@ -190,7 +182,6 @@ public class PopUpManager : MonoBehaviour
     {
         GameManager.Event_OnGamePause();
         //ScreenManager.Instance.settingsIcon.SetActive(false);
-        bgs.SetActive(true);
         bgImage.enabled = false;
         dishName.text = _dish.Dish_Name;
         dishOfTheDay.SetActive(true);
@@ -199,7 +190,6 @@ public class PopUpManager : MonoBehaviour
 
     public void HideDishOfTheDay()
     {
-        bgs.SetActive(false);
         dishOfTheDay.SetActive(false);
         //ScreenManager.Instance.settingsIcon.SetActive(true);
         GameManager.Event_OnGameResume();
@@ -211,23 +201,24 @@ public class PopUpManager : MonoBehaviour
     public void ShowPopup_WaitingForOtherPlayers()
     {
         bgImage.enabled = true;
-        bgs.SetActive(true);
         waitingForOtherPlayers.SetActive(true);
+
+        GameManager.Instance.GetPlayerData();
         //ScreenManager.Instance.settingsIcon.SetActive(false);
 
         if (InstanceFinder.ClientManager.Started) //&& InstanceFinder.ServerManager.Started
         {
             crossWaitingPopup.SetActive(false);
-            ServerInstancing.Instance.QuickRaceConnect(GameManager.Instance.GetUserData(), InstanceFinder.ClientManager.Connection);
+            bool restoreGame = !string.IsNullOrWhiteSpace(GameManager.Instance.savedData.userDataServer.uid);
+            if (restoreGame) GameManager.Instance.SetUserData(GameManager.Instance.savedData);
+            GameManager.Instance.isRunningLocal = GameManager.Instance.GetUserData().isLocal = false;
+            ServerInstancing.Instance.QuickRaceConnect(GameManager.Instance.GetUserData(), InstanceFinder.ClientManager.Connection, restoreGame);
         }
         else
         {
-
-            ConnectionManager.Instance.StartLocalHost();
-            StartCoroutine(StartLocalGame());
-            //crossWaitingPopup.SetActive(true);
-            //waitingForPlayersTimer.text = "Couldn't establish a connection!\nPlease try again.";
-            //InstanceFinder.ClientManager.StartConnection();
+            crossWaitingPopup.SetActive(false);
+            waitingForPlayersTimer.text = "Loading... \nPlease wait.";
+            GameManager.Instance.StartCoroutine(GameManager.Instance.StartLocalGame());
         }
     }
 
@@ -235,6 +226,8 @@ public class PopUpManager : MonoBehaviour
 
     private IEnumerator StartLocalGame()
     {
+        ConnectionManager.Instance.StartLocalHost();
+
         timeout--;
         if (timeout < 0)
             yield break;
@@ -255,7 +248,6 @@ public class PopUpManager : MonoBehaviour
 
     public void HideWaitingForOtherPlayers()
     {
-        bgs.SetActive(false);
         bgImage.enabled = false;
         waitingForOtherPlayers.SetActive(false);
         //ScreenManager.Instance.settingsIcon.SetActive(true);
@@ -263,7 +255,6 @@ public class PopUpManager : MonoBehaviour
 
     public void Close_HideWaitingForOtherPlayers()
     {
-        bgs.SetActive(false);
         bgImage.enabled = false;
         waitingForOtherPlayers.SetActive(false);
         ScreenManager.Instance.SwitchScreen(null, ScreenManager.Instance.menuScreen.gameObject);

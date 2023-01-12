@@ -32,7 +32,7 @@ public class LeaderboardScreen : MonoBehaviour
         {
             print(Newtonsoft.Json.JsonConvert.SerializeObject(item.Value));
             item.Value.rank = $"{_rank + 1}";
-            records.transform.GetChild(_rank).name = item.Key == GameManager.Instance.GetUserData().userDataServer.uid ? "You" : item.Value.userName;
+            records.transform.GetChild(_rank).name = item.Key == GameManager.Instance.GetUserUID() ? "You" : item.Value.userName;
 
             Image[] images = records.transform.GetChild(_rank).GetComponentsInChildren<Image>();
             for (int j = 0; j < images.Length; j++)
@@ -41,7 +41,7 @@ public class LeaderboardScreen : MonoBehaviour
             // Rank
             records.transform.GetChild(_rank).GetChild(0).GetChild(0).GetComponent<TMPro.TextMeshProUGUI>().text = item.Value.rank;
             // Player Name
-            records.transform.GetChild(_rank).GetChild(1).GetChild(0).GetComponent<TMPro.TextMeshProUGUI>().text = item.Key == GameManager.Instance.GetUserData().userDataServer.uid ? "You" : item.Value.userName;
+            records.transform.GetChild(_rank).GetChild(1).GetChild(0).GetComponent<TMPro.TextMeshProUGUI>().text = item.Key == GameManager.Instance.GetUserUID() ? "You" : item.Value.userName;
             // Dish Name
             records.transform.GetChild(_rank).GetChild(2).GetChild(0).GetComponent<TMPro.TextMeshProUGUI>().text = item.Value.dishName;
             // Time

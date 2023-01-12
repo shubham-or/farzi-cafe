@@ -11,13 +11,10 @@ using System.Linq;
 
 public class ClientServerManager : NetworkBehaviour
 {
-
     public GameObject botPrefab;
+    public Vector3 playerPosition;
 
     public double serverTime = 0;
-
-    //[SyncVar]
-    //public LocalConnectionState clientState = LocalConnectionState.Stopped;
 
     public static ClientServerManager Instance;
     private void Awake()
@@ -37,12 +34,8 @@ public class ClientServerManager : NetworkBehaviour
     }
 
 
-    //private void ClientManager_OnClientConnectionState(ClientConnectionStateArgs obj) => clientState = obj.ConnectionState;
-
-
-
     [TargetRpc]
-    public void SetDataForUser(NetworkConnection connection, RoomDetails _room, LeaderBoardItem _leaderBoard)
+    public void SetDataForUser(NetworkConnection connection, RoomDetails _room, LeaderBoardItem _leaderBoard, bool _restoreGame)
     {
         print("SetRoomAndDishDetailsForUser -> " + _room.dishData.Dish_Name);
 
@@ -65,7 +58,7 @@ public class ClientServerManager : NetworkBehaviour
         GameManager.Instance.SetRoomDetails(_room);
         GameManager.Instance.SetDishData(_room.dishData);
         GameManager.Instance.SetLeaderboardData(_leaderBoard);
-        GameManager.Instance.cluesManager.Setup(_room.dishData);
+        GameManager.Instance.cluesManager.Setup(_room.dishData, _restoreGame ? GameManager.Instance.savedData.userDataServer.currentIngredientIndex : 0);
 
         //Debug.Log("DIsh COunt For USer:   " + _room.userData[UserMetaData.myAddress].userDishes.selectedDish.Count);
     }
@@ -100,14 +93,23 @@ public class ClientServerManager : NetworkBehaviour
     {
         ScreenManager.Instance.gameplayScreen.UpdateGamePlayTime(_timeGone);
         if (!GameManager.Instance.GetUserData().hasCompleted)
-            GameManager.Instance.GetUserData().leaderBoard.time = _timeGone;
+            GameManager.Instance.SetGameTime(_timeGone);
     }
 
+
+    int counter;
     [TargetRpc]
     public void GenerateBot(NetworkConnection networkConnection, UserData _botData)
     {
-        print("Bot Created on Client - " + _botData.userDataServer.uid);
-        AI aI = Instantiate(botPrefab).GetComponent<AI>();
+        if (counter >= 4) counter = 0;
+
+        print("Bot Created on Client - " + _botData.userDataServer.userName);
+        Vector3 _position = playerPosition;
+        float _multiplier = (++counter) * 0.06f;
+        _position.x += playerPosition.x * _multiplier;
+        _position.z += playerPosition.z * _multiplier;
+        AI aI = Instantiate(botPrefab, _position, Quaternion.identity).GetComponent<AI>();
+        aI.GetComponent<Bot>().Init(_botData);
         GameManager.Instance.AddBot(_botData);
         //UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(aI.gameObject, GameplayScene.Instance.gameObject.scene);
     }

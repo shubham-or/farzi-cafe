@@ -14,8 +14,8 @@ public class GameplayScene : MonoBehaviour
     void Start()
     {
         print("Scene Loaded - " + gameObject.scene.name);
-        GameManager.Instance.leftdoor = leftDoor;
-        GameManager.Instance.rightdoor = rightDoor;
+        GameManager.Instance.leftdoor = leftDoor.GetComponentInChildren<Animator>();
+        GameManager.Instance.rightdoor = rightDoor.GetComponentInChildren<Animator>();
 
         GameManager.Instance.cluesManager.dishes = dishes;
     }

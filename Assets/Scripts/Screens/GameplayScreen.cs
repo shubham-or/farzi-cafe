@@ -5,13 +5,13 @@ public class GameplayScreen : MonoBehaviour
 {
     [SerializeField] private GameObject ingredientsGo;
     [SerializeField] private GameObject clueGo;
+    [SerializeField] private GameObject claimDishGo;
     [SerializeField] private TMPro.TextMeshProUGUI time;
 
     [Space(20)]
     [SerializeField] private TMPro.TextMeshProUGUI hint;
     [SerializeField] private TMPro.TextMeshProUGUI clue;
     [SerializeField] private RawImage[] ingredients;
-    [SerializeField] private int freeRoamTime = 10;
 
     [Header("-----Debug-----")]
     [SerializeField] private int currentClueIndex;
@@ -36,11 +36,12 @@ public class GameplayScreen : MonoBehaviour
     public void Init()
     {
         ingredientsGo.SetActive(false);
-        clueGo.SetActive(false);
+        clueGo.SetActive(true);
+        claimDishGo.SetActive(false);
 
-        currentClueIndex = 0;
-        clue.text = $"Clue {currentClueIndex + 1}";
-        hint.text = $"Clue {currentClueIndex + 1}: Hint goes here";
+        //currentClueIndex = 0;
+        //clue.text = $"Clue {currentClueIndex + 1}";
+        //hint.text = $"Clue {currentClueIndex + 1}: Hint goes here";
     }
 
 
@@ -50,6 +51,7 @@ public class GameplayScreen : MonoBehaviour
         print("Start main GamePlay");
         ingredientsGo.SetActive(true);
         clueGo.SetActive(true);
+        claimDishGo.SetActive(false);
 
         PopUpManager.Instance.ShowPopup_DishOfTheDay(GameManager.Instance.cluesManager.selectedDish);
     }
@@ -84,6 +86,13 @@ public class GameplayScreen : MonoBehaviour
             ingredients[currentClueIndex].texture = _next.enabledTexture;
         }
     }
+
+    public void ShowDishClaim()
+    {
+        clueGo.SetActive(false);
+        claimDishGo.SetActive(true);
+    }
+
 
     public void UpdateGamePlayTime(float _time)
     {

@@ -23,14 +23,22 @@ public class LoginScreen : MonoBehaviour
 
     public void Init()
     {
-        loginTitle.text = "Login with";
+        loginTitle.text = "";
         loginTitle.color = Color.black;
+
 
         welcome.SetActive(false);
         socialLogin.SetActive(true);
         userName.text = "";
 
         error.gameObject.SetActive(false);
+    }
+
+
+    void Update()
+    {
+        if ((Input.GetKeyUp(KeyCode.KeypadEnter) || Input.GetKeyUp(KeyCode.Return)) && welcome.activeInHierarchy)
+            OnClick_Enter();
     }
 
 
@@ -86,15 +94,15 @@ public class LoginScreen : MonoBehaviour
 #if UNITY_EDITOR || UNITY_STANDALONE_WIN
         socialLogin.SetActive(false);
         welcome.SetActive(true);
-        userName.text = "Gmail";
+        userName.text = "Username";
         GameManager.Instance.SetUserData(new UserData
         {
             userDataServer = new UserDataServer
             {
-                uid = System.Guid.NewGuid().ToString(),
+                uid = GameManager.GetUnixTimeCode(),
                 actualName = "Gmail",
-                userName = "Gmail",
-                email = "",
+                userName = "Username",
+                email = "email@onerare.io",
                 picture = "",
                 signInMethod = "",
                 score = "0",
@@ -206,15 +214,15 @@ public class LoginScreen : MonoBehaviour
 #if UNITY_EDITOR || UNITY_STANDALONE_WIN
         socialLogin.SetActive(false);
         welcome.SetActive(true);
-        userName.text = "Facebook";
+        userName.text = "Username";
         GameManager.Instance.SetUserData(new UserData
         {
             userDataServer = new UserDataServer
             {
-                uid = System.Guid.NewGuid().ToString(),
+                uid = GameManager.GetUnixTimeCode(),
                 actualName = "Facebook",
-                userName = "Facebook",
-                email = "",
+                userName = "Username",
+                email = "email@onerare.io",
                 picture = "",
                 signInMethod = "",
                 score = "0",
@@ -283,7 +291,6 @@ public class LoginScreen : MonoBehaviour
 
     public void OnClick_Enter()
     {
-        userName.text = GameManager.Instance.GetUserData().userDataServer.userName;
         error.gameObject.SetActive(false);
 #if UNITY_EDITOR  || UNITY_STANDALONE_WIN
         OnSuccess_UpdateUsername("");
@@ -298,15 +305,37 @@ public class LoginScreen : MonoBehaviour
     public void OnSuccess_UpdateUsername(string _json)
     {
         print("OnSuccess_UpdateUsername- " + _json);
+
+        if (string.IsNullOrWhiteSpace(userName.text))
+        {
+            error.text = "Invalid inputs!";
+            userName.SetTextWithoutNotify(GameManager.Instance.GetUserData().userDataServer.userName);
+            error.gameObject.SetActive(true);
+            return;
+        }
+
         GameManager.Instance.GetUserData().userDataServer.userName = userName.text;
 
+        if (Application.isEditor)
+            GameManager.Instance.playerDataHandler.SetFilePath(userName.text.Trim());
+        else
+        {
+            string _fileName = string.IsNullOrWhiteSpace(GameManager.Instance.GetUserData().userDataServer.uid) ?
+                GameManager.Instance.GetUserData().userDataServer.email.Replace('@', '_').Replace('.', '_').Trim() :
+                GameManager.Instance.GetUserData().userDataServer.uid.Trim();
 
+            GameManager.Instance.playerDataHandler.SetFilePath(_fileName);
+        }
+
+
+        AudioManager.Instance.PlayMusicSound();
         ScreenManager.Instance.SwitchScreen(ScreenManager.Instance.loginScreen.gameObject, ScreenManager.Instance.menuScreen.gameObject);
     }
 
     public void OnFailed_UpdateUsername(string _json)
     {
         print("OnFailed_UpdateUsername- " + _json);
+        error.text = "Something went Wrong. Please try again!";
         error.gameObject.SetActive(true);
     }
 

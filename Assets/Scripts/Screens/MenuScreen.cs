@@ -37,7 +37,7 @@ public class MenuScreen : MonoBehaviour
 
     private void OnEnable()
     {
-        playButtonText.text = GameManager.Instance.hasGameStarted ? "Resume" : "Play";
+        playButtonText.text = GameManager.Instance.hasGameStarted && !GameManager.Instance.GetUserData().hasCompleted ? "Resume" : "Play";
         GameManager.Event_OnGamePause();
     }
     private void OnDisable()
@@ -58,7 +58,7 @@ public class MenuScreen : MonoBehaviour
     #region Menu Buttons
     public void OnClick_Play()
     {
-        if (GameManager.Instance.hasGameStarted)
+        if (GameManager.Instance.hasGameStarted && !GameManager.Instance.GetUserData().hasCompleted)
         {
             GameManager.Event_OnGameResume();
             gameObject.SetActive(false);
@@ -101,8 +101,17 @@ public class MenuScreen : MonoBehaviour
     #region Settings
     public void OnInputField_Username(string _value)
     {
+        if (string.IsNullOrWhiteSpace(_value))
+        {
+            userName.SetTextWithoutNotify(GameManager.Instance.GetUserData().userDataServer.userName);
+            error.gameObject.SetActive(true);
+            return;
+        }
         error.gameObject.SetActive(false);
         GameManager.Instance.GetUserData().userDataServer.userName = _value.Trim();
+
+        if (GameManager.Instance.player && GameManager.Instance.hasGameStarted)
+            GameManager.Instance.player.UpdateDisplayName(_value.Trim());
 #if UNITY_EDITOR
         OnSuccess_UpdateUsername("");
 #elif UNITY_WEBGL && !UNITY_EDITOR
@@ -129,15 +138,9 @@ public class MenuScreen : MonoBehaviour
 
     }
 
-    public void OnSlider_Music(float _value)
-    {
+    public void OnSlider_Music(float _value) => AudioManager.Instance.SetMusicVolume(_value * .01f);
 
-    }
-
-    public void OnSlider_SoundEffects(float _value)
-    {
-
-    }
+    public void OnSlider_SoundEffects(float _value) => AudioManager.Instance.SetSoundVolume(_value * .01f);
     #endregion
 
 
@@ -151,7 +154,6 @@ public class MenuScreen : MonoBehaviour
     public void OnClick_ExitYes()
     {
 #if UNITY_WEBGL && !UNITY_EDITOR
-
         ReactHandler.QuitGame();
 #endif
     }

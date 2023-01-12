@@ -21,9 +21,12 @@ namespace NaughtyCharacter
             if (_playerInput == null || _playerCamera == null)
                 Init();
 
-            UpdateControlRotation();
-            Character.SetMovementInput(GetMovementInput());
-            Character.SetJumpInput(_playerInput.JumpInput);
+            if (Character)
+            {
+                UpdateControlRotation();
+                Character.SetMovementInput(GetMovementInput());
+                Character.SetJumpInput(_playerInput.JumpInput);
+            }
         }
 
         public override void OnCharacterFixedUpdate()
@@ -31,8 +34,11 @@ namespace NaughtyCharacter
             if (_playerInput == null || _playerCamera == null)
                 Init();
 
-            _playerCamera.SetPosition(Character.transform.position);
-            _playerCamera.SetControlRotation(Character.GetControlRotation());
+            if (Character)
+            {
+                _playerCamera.SetPosition(Character.transform.position);
+                _playerCamera.SetControlRotation(Character.GetControlRotation());
+            }
         }
 
         private void UpdateControlRotation()

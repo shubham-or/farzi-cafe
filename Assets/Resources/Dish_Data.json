@@ -190,7 +190,7 @@
         },
         {
             "object_name": "Outdoor Tables",
-            "clue": "You look tired, grab a chair outside! Keeping number 5 reserved for you.",
+            "clue": "You look tired, grab a chair outside! Keeping number 8 reserved for you.",
             "location": "Exterior"
         },
         {
@@ -225,12 +225,12 @@
         },
         {
             "object_name": "Food Paintings",
-            "clue": "What would a foodie painter paint? ",
+            "clue": "What would a foodie painter paint?",
             "location": "Interior"
         },
         {
             "object_name": "Bar Bottles",
-            "clue": "In the mood for a drink? Let's open a bottle! ",
+            "clue": "In the mood for a drink? Let's open a bottle!",
             "location": "Interior"
         },
         {
@@ -250,17 +250,17 @@
         },
         {
             "object_name": "Grass Wallpaper",
-            "clue": "Grass is greener on the other wall. /OR/ Mirror Mirror on the Wall, Which is the Greenest Wall of All ?",
+            "clue": "Grass is greener on the other wall.",
             "location": "Interior"
         },
         {
             "object_name": "Leather Sofa",
-            "clue": "Shotgun on the comfiest sofa in the house! /OR/ Brown and Soft, it’s the best Seating Spot of all ",
+            "clue": "Brown and Soft, it’s the best Seating Spot of all",
             "location": "Interior"
         },
         {
             "object_name": "Bar Stool",
-            "clue": "Taller than the rest. To sit at the bar, it's the best! ",
+            "clue": "Taller than the rest. To sit at the bar, it's the best!",
             "location": "Interior"
         },
         {
@@ -275,7 +275,7 @@
         },
         {
             "object_name": "Utensils",
-            "clue": "If the kitchen was a band, we would be the instruments. ",
+            "clue": "If the kitchen was a band, we would be the instruments.",
             "location": "Kitchen"
         },
         {
@@ -285,17 +285,17 @@
         },
         {
             "object_name": "Gas Stove",
-            "clue": "The Best Aroma comes from here - Head to the Kitchen and see what’s cooking. ",
+            "clue": "The Best Aroma comes from here - Head to the Kitchen and see what’s cooking.",
             "location": "Kitchen"
         },
         {
             "object_name": "Gas Stove - Dish",
-            "clue": "Still cooking. Don't taste yet or you'll burn your tongue. ",
+            "clue": "Still cooking. Don't taste yet or you'll burn your tongue.",
             "location": "Kitchen"
         },
         {
             "object_name": "Signage - Keep Clean",
-            "clue": "Check your tables, check your chin. Make sure you keep it clean. ",
+            "clue": "Check your tables, check your chin. Make sure you keep it clean.",
             "location": "Kitchen"
         }
     ],

@@ -9,7 +9,7 @@ public class CluesManager : MonoBehaviour
     [SerializeField] public TimerDisplay m_Timer;
 
 
-    public List<Clue> clues = new List<Clue>();
+    public List<Clue> ingredients = new List<Clue>();
     public List<CluePoint> chosenCluePoints = new List<CluePoint>();
     public List<CluePoint> cluePoints = new List<CluePoint>();
 
@@ -45,29 +45,22 @@ public class CluesManager : MonoBehaviour
         AssignNextClue();
     }
 
-    public void Setup(DishData.Dish _dish)
+    public void Setup(DishData.Dish _dish, int initialClueIndex = 0)
     {
-        print("ClueManager Setup for - " + GameManager.Instance.GetUserData().userDataServer.userName);
+        print("ClueManager Setup for - " + GameManager.Instance.GetUserData().userDataServer.userName + "| Initial Index - " + initialClueIndex);
 
         ResetData();
         selectedDish = _dish;
         Generate_Clues();
         Set_RandomClues();
-        AssignNextClue();
-        //StartCoroutine(Co_Setup());
+
+        // restore old game
+        for (int i = initialClueIndex; i >= 0; i--)
+            AssignNextClue();
+
+        //if (initialClueIndex > 0)
+        //    currentClueIndex = GameManager.Instance.GetUserData().userDataServer.currentIngredientIndex = currentClueIndex + 1;
     }
-
-    //private IEnumerator Co_Setup()
-    //{
-
-    //    yield return new WaitForEndOfFrame();
-
-    //    yield return new WaitForEndOfFrame();
-
-    //}
-
-
-    private void OnDisable() => ResetData();
 
     private void ResetData()
     {
@@ -75,10 +68,9 @@ public class CluesManager : MonoBehaviour
         currentClueIndex = -1;
         currentClue = null;
         selectedDish = null;
-        clues.Clear();
+        ingredients.Clear();
         chosenCluePoints.Clear();
     }
-
 
 
     #region Dish
@@ -121,7 +113,7 @@ public class CluesManager : MonoBehaviour
             string _disabledPath = $"{selectedDish.Dish_Name }/B_W/{selectedDish.Ingredients[i].name}";
             c.disabledTexture = Resources.Load<Texture2D>(_disabledPath);
 
-            clues.Add(c);
+            ingredients.Add(c);
             ScreenManager.Instance.gameplayScreen.SetIngredient(c);
         }
     }
@@ -132,7 +124,7 @@ public class CluesManager : MonoBehaviour
         print("Set_RandomClues");
         List<CluePoint> tempPoints = new List<CluePoint>(cluePoints);
 
-        for (int i = 0; i < clues.Count; i++)
+        for (int i = 0; i < ingredients.Count; i++)
         {
             int randomPoint = Random.Range(0, tempPoints.Count);
 
@@ -141,9 +133,9 @@ public class CluesManager : MonoBehaviour
             CluePoint cp = (tempPoints[randomPoint]);
             tempPoints.RemoveAt(randomPoint);
 
-            cp.Set_Clue(clues[i]);
-            clues[i].clue = dish_Data.Clues.First(x => x.object_name.Trim().ToLower() == cp.name.Trim().ToLower()).clue;
-            clues[i].hidingSpot = dish_Data.HidingSpots.First(x => x.object_name.Trim().ToLower() == cp.name.Trim().ToLower()).hidingspot;
+            cp.Set_Clue(ingredients[i]);
+            ingredients[i].clue = dish_Data.Clues.First(x => x.object_name.Trim().ToLower() == cp.name.Trim().ToLower()).clue;
+            ingredients[i].hidingSpot = dish_Data.HidingSpots.First(x => x.object_name.Trim().ToLower() == cp.name.Trim().ToLower()).hidingspot;
             chosenCluePoints.Add(cp);
         }
     }
@@ -152,30 +144,32 @@ public class CluesManager : MonoBehaviour
     [ContextMenu("AssignNextClue")]
     public void AssignNextClue()
     {
-        if (clues.Count == 0) return;
+        //if (ingredients.Count == 0) return;
         print("AssignNextClue");
 
+        if (currentClueIndex >= 0)
+            chosenCluePoints[currentClueIndex].gameObject.SetActive(false);
 
         currentClueIndex++;
 
-
-        if (currentClueIndex == clues.Count)
+        if (currentClueIndex == ingredients.Count)
         {
             print("Found all Ingredients... And claim dish");
-            //claim dish 
             GetCurrentDish().SetActive(true);
+            ScreenManager.Instance.gameplayScreen.ShowDishClaim();
             return;
         }
 
-        currentClue = clues[currentClueIndex];
+        currentClue = ingredients[currentClueIndex];
         //testTxt.text = chosenCluePoints[currentClueIndex].hint.ToString(); //to show hint for a particular clue     
         chosenCluePoints[currentClueIndex].gameObject.SetActive(true);
 
         //Clue position name
         textCluePosName.text = chosenCluePoints[currentClueIndex].gameObject.name;
-        ScreenManager.Instance.gameplayScreen.ActivateNextItem(currentClue, currentClueIndex - 1 >= 0 ? clues[currentClueIndex - 1] : null);
+        ScreenManager.Instance.gameplayScreen.ActivateNextItem(currentClue, currentClueIndex - 1 >= 0 ? ingredients[currentClueIndex - 1] : null);
 
-        GameManager.Instance.GetUserData().leaderBoard.currentIngredientIndex = currentClueIndex;
+        GameManager.Instance.GetUserData().userDataServer.currentIngredientIndex = currentClueIndex;
+        GameManager.Instance.SavePlayerData();
     }
     #endregion
 

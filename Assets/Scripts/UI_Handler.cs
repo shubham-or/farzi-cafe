@@ -11,6 +11,7 @@ public class UI_Handler : MonoBehaviour
 
     public GameObject interactionPanel_Container;
     public TextMeshProUGUI interactionText;
+    public TextMeshProUGUI interactionKeyText;
     public Image interactionHoldProgress;
 
     // Start is called before the first frame update
@@ -20,11 +21,15 @@ public class UI_Handler : MonoBehaviour
     }
 
 
-    public void Key_E_Popup_On(string text)
+    public void Key_E_Popup_On(string text, string _key = null)
     {
         interactionPanel_Container.SetActive(true);
         interactionText.text = text;
+
+        if (_key != null)
+            interactionKeyText.text = _key;
     }
+
 
     public void Key_E_Popup_Off()
     {

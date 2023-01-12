@@ -75,6 +75,9 @@ namespace NaughtyCharacter
         public Vector3 VerticalVelocity => _characterController.velocity.Multiply(0.0f, 1.0f, 0.0f);
         public bool IsGrounded { get; private set; }
 
+
+
+
         private void Awake()
         {
             _characterController = GetComponent<CharacterController>();
@@ -100,6 +103,8 @@ namespace NaughtyCharacter
 
         private void Tick(float deltaTime)
         {
+            if (!_characterController.enabled) return;
+
             UpdateHorizontalSpeed(deltaTime);
             UpdateVerticalSpeed(deltaTime);
 

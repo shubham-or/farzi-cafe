@@ -7,6 +7,7 @@ public class UserData
     [Header("---BasicDetails---")]
     public bool isBot = false;
     public bool hasCompleted = false;
+    public bool isLocal = false;
 
     [Space(10)]
     [Header("---UserData---")]
@@ -20,11 +21,12 @@ public class UserData
     [Header("---LeaderboardData---")]
     public LeaderBoardItem leaderBoard = new LeaderBoardItem();
 
+
     public UserData CreateBotData()
     {
-        userDataServer.uid = GameManager.GetUnitueID();
-        userDataServer.actualName = "Player_" + userDataServer.uid;
-        userDataServer.userName = " Player_" + UnityEngine.Random.Range(99, 999999);
+        userDataServer.uid = GameManager.GetUnixTimeCode();
+        userDataServer.actualName = "Bot_" + userDataServer.uid;
+        userDataServer.userName = PlayerNameHandler.Instance.GetRandomName();
         userDataServer.signInMethod = "";
         userDataServer.email = "";
         userDataServer.picture = "";
@@ -40,6 +42,7 @@ public class UserData
         userDataServer.roomId = roomDetails.ID;
         userDataServer.roomName = roomDetails.Name;
     }
+
 }
 
 
@@ -50,8 +53,7 @@ public class LeaderBoardItem
     public string rank;
     public string userName;
     public string dishName;
-    public int currentIngredientIndex;
-    public float time = 1800; // 30mins
+    public float time;
     public bool isBot = false;
 }
 
@@ -65,8 +67,9 @@ public class UserDataServer
     public string email;
     public string signInMethod;
     public string picture;
-    public string score = ""; // Rank
-    public string time = "0";
+    public string score; // Rank
+    public string time;
+    public int currentIngredientIndex;
     public string lastUpdated = DateTime.Now.ToString();
 
     public string roomId;

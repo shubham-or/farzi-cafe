@@ -1745,6 +1745,7 @@ MonoBehaviour:
   interactionDistance: 30
   Hit_Object: 
   MainCamera: {fileID: 0}
+  hitCollider: {fileID: 0}
 --- !u!114 &3715595139323921946
 MonoBehaviour:
   m_ObjectHideFlags: 0

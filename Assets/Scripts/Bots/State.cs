@@ -71,7 +71,7 @@ public class State
         player.visited_Ing++;
         if (player.currentClue._clue.id == player.chasingClue._clue.id)
         {
-            Debug.Log("Its a right ingredient");
+            //Debug.Log("Its a right ingredient");
             return true;
         }
 

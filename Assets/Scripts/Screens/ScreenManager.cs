@@ -8,24 +8,16 @@ public class ScreenManager : MonoBehaviour
     public MenuScreen menuScreen;
     public GameplayScreen gameplayScreen;
     public LeaderboardScreen leaderboardScreen;
+    public NFTScreen nftScreen;
 
-
-    [Space(20)]
-    //public GameObject settingsIcon;
-
-    public static ScreenManager Instance;
-    private void Awake()
-    {
-        Instance = this;
-        //DontDestroyOnLoad(gameObject);
-    }
     public GameObject currentScreen;
 
-    void Start()
-    {
-        Init();
-    }
 
+    public static ScreenManager Instance;
+    private void Awake() => Instance = this;
+
+
+    void Start() => Init();
 
     private void Update()
     {
@@ -40,8 +32,8 @@ public class ScreenManager : MonoBehaviour
         menuScreen.gameObject.SetActive(false);
         leaderboardScreen.gameObject.SetActive(false);
         gameplayScreen.gameObject.SetActive(false);
+        nftScreen.gameObject.SetActive(false);
 
-        //settingsIcon.SetActive(false);
         currentScreen = splashScreen.gameObject;
     }
 
@@ -53,6 +45,8 @@ public class ScreenManager : MonoBehaviour
         if (_from != null)
             _from.SetActive(false);
     }
+
+
 
     public void OnClick_SettingsIcon()
     {
@@ -70,7 +64,6 @@ public class ScreenManager : MonoBehaviour
                 menuScreen.gameObject.SetActive(false);
                 splashScreen.gameObject.SetActive(false);
                 loginScreen.gameObject.SetActive(false);
-                //settingsIcon.SetActive(true);
                 GameManager.Event_OnGameResume();
             }
             else
@@ -78,7 +71,6 @@ public class ScreenManager : MonoBehaviour
                 menuScreen.gameObject.SetActive(true);
                 splashScreen.gameObject.SetActive(false);
                 loginScreen.gameObject.SetActive(false);
-                //settingsIcon.SetActive(false);
                 GameManager.Event_OnGamePause();
             }
         }

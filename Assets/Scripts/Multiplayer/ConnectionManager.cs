@@ -34,6 +34,7 @@ public class ConnectionManager : MonoBehaviour
         else if (connection == Connection.Client) InstanceFinder.ClientManager.StartConnection();
         //Init();
     }
+
     [ContextMenu("Init")]
     public void Init()
     {

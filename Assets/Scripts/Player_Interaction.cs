@@ -13,7 +13,7 @@ public class Player_Interaction : NetworkBehaviour
 
     private UI_Handler m_UIHandler;
     private CluesManager m_CluesManager;
-    [SerializeField]private Camera MainCamera;
+    [SerializeField] private Camera MainCamera;
 
     bool isHit;
     bool isHitDish;
@@ -41,12 +41,6 @@ public class Player_Interaction : NetworkBehaviour
         }
     }
 
-    public override void OnStartClient()
-    {
-        base.OnStartClient();
-    }
-
-
     public override void OnStopClient()
     {
         base.OnStopClient();
@@ -61,9 +55,13 @@ public class Player_Interaction : NetworkBehaviour
 
     public void Init(Camera _main = null)
     {
-        if (!IsOwner) return;
-
         if (MainCamera == null) MainCamera = _main == null ? Camera.main : _main;
+
+        if (GameManager.Instance)
+        {
+            m_UIHandler = GameManager.Instance.uIHandler;
+            m_CluesManager = GameManager.Instance.cluesManager;
+        }
 
         //if (MainCamera)
         //{
@@ -72,32 +70,29 @@ public class Player_Interaction : NetworkBehaviour
         //}
     }
 
-
     // Update is called once per frame
     void Update()
     {
-        if (!IsOwner) return;
+        if (!IsOwner && !GameManager.Instance.player.isRunningLocal) return;
         if (GameManager.Instance.isGameplayPaused) return;
         if (m_UIHandler == null || m_CluesManager == null || GameManager.Instance.leftdoor == null || GameManager.Instance.rightdoor == null || MainCamera == null) return;
 
+        /*
         Ray ray = new Ray(MainCamera.transform.position, (MainCamera.transform.forward) * interactionDistance);
-
         Debug.DrawRay(MainCamera.transform.position, (MainCamera.transform.forward) * interactionDistance, Color.red);
-
         RaycastHit hit;
-
         if (Physics.Raycast(ray, out hit, interactionDistance, mask))
         {
             Hit_Object = hit.collider.gameObject.name;
 
             if (((hit.collider.gameObject.tag) == "WayPoint"))
             {
-                m_UIHandler.Key_E_Popup_On("  Press 'E' ");
+                m_UIHandler.Key_E_Popup_On("  Press 'E' ", "E");
                 isHit = true;
             }
             else if (((hit.collider.gameObject.tag) == "Dish"))
             {
-                m_UIHandler.Key_E_Popup_On("  Press 'D' ");
+                m_UIHandler.Key_E_Popup_On("  Press 'D' ", "D");
                 isHitDish = true;
             }
             else
@@ -114,10 +109,11 @@ public class Player_Interaction : NetworkBehaviour
             isHit = false;
             isHitDish = false;
         }
+        */
 
         if (Input.GetKeyDown(KeyCode.E) && isHit)
         {
-            CluePoint triggeredClue = hit.collider.gameObject.GetComponent<CluePoint>();
+            CluePoint triggeredClue = hitCollider.gameObject.GetComponent<CluePoint>();
             if (triggeredClue != null)
             {
                 print("Different Object Found...");
@@ -129,6 +125,7 @@ public class Player_Interaction : NetworkBehaviour
                     m_UIHandler.Key_E_Popup_On(triggeredClue.gameObject.name + " Found ");
 
                     print("Object Found");
+                    AudioManager.Instance.PlayIngredientSound();
                     PopUpManager.OnIngredientFound(triggeredClue._clue);
 
                     m_CluesManager.AssignNextClue(); //Assign function also to be removed for above statement
@@ -143,10 +140,11 @@ public class Player_Interaction : NetworkBehaviour
 
         if (Input.GetKeyDown(KeyCode.D) && isHitDish)
         {
-            hit.collider.gameObject.SetActive(false);
+            hitCollider.gameObject.SetActive(false);
 
             //dish claimed + Timer off and show leaderboard
             print("dish claimed");
+            AudioManager.Instance.PlayWinningSound();
             m_CluesManager.OnDishClaimed();
         }
     }
@@ -157,65 +155,68 @@ public class Player_Interaction : NetworkBehaviour
         isObjPicking = false;
     }
 
+
+    public Collider hitCollider;
     private void OnTriggerEnter(Collider other)
     {
-        //print("Enter");
+        print("Enter");
         if (other.gameObject.name == "RightDoor_Collider")
-            GameManager.Instance.rightdoor.GetComponentInChildren<Animator>().SetBool("IsPlay", true);
+            GameManager.Instance.rightdoor.SetBool("IsPlay", true);
         else if (other.gameObject.name == "LeftDoor_Collider")
-            GameManager.Instance.leftdoor.GetComponentInChildren<Animator>().SetBool("IsPlay", true);
+            GameManager.Instance.leftdoor.SetBool("IsPlay", true);
+
+        if (!IsOwner && !GameManager.Instance.player.isRunningLocal) return;
+        else
+        {
+            if (other.gameObject.tag == "WayPoint")
+            {
+                m_UIHandler.Key_E_Popup_On("  Press 'E' ", "E");
+                isHit = true;
+                hitCollider = other;
+            }
+            else if (other.gameObject.tag == "Dish")
+            {
+                m_UIHandler.Key_E_Popup_On("  Press 'D' ", "D");
+                isHitDish = true;
+                hitCollider = other;
+            }
+            else
+            {
+                isHit = false;
+                isHitDish = false;
+                hitCollider = null;
+            }
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.name == "RightDoor_Collider")
+        {
+            if (!GameManager.Instance.rightdoor.GetBool("IsPlay"))
+                GameManager.Instance.rightdoor.SetBool("IsPlay", true);
+
+        }
+        else if (other.gameObject.name == "LeftDoor_Collider")
+        {
+            if (!GameManager.Instance.rightdoor.GetBool("IsPlay"))
+                GameManager.Instance.leftdoor.SetBool("IsPlay", true);
+        }
+
     }
 
 
     private void OnTriggerExit(Collider other)
     {
-        //print("Exit");
+        print("Exit");
         if (other.gameObject.name == "RightDoor_Collider")
-            GameManager.Instance.rightdoor.GetComponentInChildren<Animator>().SetBool("IsPlay", false);
+            GameManager.Instance.rightdoor.SetBool("IsPlay", false);
         else if (other.gameObject.name == "LeftDoor_Collider")
-            GameManager.Instance.leftdoor.GetComponentInChildren<Animator>().SetBool("IsPlay", false);
+            GameManager.Instance.leftdoor.SetBool("IsPlay", false);
+
+        isHit = false;
+        isHitDish = false;
+        hitCollider = null;
+        m_UIHandler.Key_E_Popup_Off();
     }
-
-
-    //private void OnCollisionEnter(Collision collision)
-    //{
-    //    Hit_Object = collision.collider.gameObject.name;
-
-    //    if (collision.collider.gameObject.tag == "WayPoint")
-    //    {
-    //        m_UIHandler.Key_E_Popup_On("  Press 'E' ");
-    //        isHit = true;
-    //    }
-    //    else if (collision.collider.gameObject.tag == "Dish")
-    //    {
-    //        m_UIHandler.Key_E_Popup_On("  Press 'D' ");
-    //        isHitDish = true;
-    //    }
-    //    else
-    //    {
-    //        isHit = false;
-    //        isHitDish = false;
-    //    }
-
-    //}
-
-    //private void OnCollisionExit(Collision collision)
-    //{
-    //    Hit_Object = collision.collider.gameObject.name;
-
-    //    if (collision.collider.gameObject.tag == "WayPoint")
-    //    {
-    //        if (!isObjPicking)
-    //            m_UIHandler.Key_E_Popup_Off();
-    //        isHit = false;
-    //        isHitDish = false;
-    //    }
-    //    else if (collision.collider.gameObject.tag == "Dish")
-    //    {
-    //        if (!isObjPicking)
-    //            m_UIHandler.Key_E_Popup_Off();
-    //        isHit = false;
-    //        isHitDish = false;
-    //    }
-    //}
 }

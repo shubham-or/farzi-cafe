@@ -10,6 +10,7 @@ using FishNet.Managing.Timing;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
+using System.Collections;
 
 public class ServerInstancing : NetworkBehaviour
 {
@@ -21,8 +22,9 @@ public class ServerInstancing : NetworkBehaviour
 
     public int localSpawnIndex = 0;
 
-    private const int MAX_PLAYERS = 5;
-    private int WAITING_FOR_PLAYERS_DURATION = 5;
+    public const int MAX_PLAYERS = 5;
+    public const int MAX_TIME = 18000; // in sec
+    private int WAITING_FOR_PLAYERS_DURATION = 3;
 
     //[SyncVar]
     //public LocalConnectionState serverState = LocalConnectionState.Stopped;
@@ -65,12 +67,6 @@ public class ServerInstancing : NetworkBehaviour
         print("SERVER STARTED-----------------");
     }
 
-    public override void OnStopNetwork()
-    {
-        base.OnStopNetwork();
-        base.Despawn();
-    }
-
     private void Start()
     {
 
@@ -89,33 +85,39 @@ public class ServerInstancing : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void QuickRaceConnect(UserData userData, NetworkConnection connection = null, bool isConnectingToLastGame = false)
     {
-        if (currentRoom != null)
+        if (isConnectingToLastGame && currentRoomsRunning.Count > 0)
         {
-            Debug.Log("current room is not null");
-            JoinRoom(connection, currentRoom, userData);
+            if (currentRoomsRunning.ContainsKey(userData.userDataServer.roomId))
+                JoinRoom(connection, currentRoomsRunning[userData.userDataServer.roomId], userData, isConnectingToLastGame);
         }
         else
         {
-            Debug.Log("current room is null");
-            CreateRoom(() => { JoinRoom(connection, currentRoom, userData); });
+            if (isConnectingToLastGame)
+            {
+                Debug.Log("Recreating room");
+                RecreateRoom(userData, () => { JoinRoom(connection, currentRoom, userData, isConnectingToLastGame); });
+            }
+            else if (currentRoom != null)
+            {
+                Debug.Log("current room is NOT null");
+                JoinRoom(connection, currentRoom, userData, isConnectingToLastGame);
+            }
+            else
+            {
+                Debug.Log("current room is null");
+                CreateRoom(() => { JoinRoom(connection, currentRoom, userData, isConnectingToLastGame); });
+            }
         }
     }
-
-    private RoomDetails FindRoomInUserAlreadyExists(UserData _userData)
-    {
-        return null;
-    }
-
 
     private void CreateRoom(Action callback = null)
     {
         RoomDetails room = new RoomDetails();
-        room.ID = Guid.NewGuid().ToString();
+        room.ID = GameManager.GetUnixTimeCode();
         room.Name = currentRoomsRunning.Count.ToString() + "FarziCafe" + Random.Range(1000, 10000).ToString();
         room.sceneHandle = currentRoomsRunning.Count + 1;
         room.MaxPlayers = MAX_PLAYERS;
         room.dishData = GameManager.Instance.cluesManager.SelectRandomDish();
-        print("Room Dish - " + room.dishData.Dish_Name);
         if (currentRoomsRunning.ContainsKey(room.ID))
             currentRoomsRunning[room.ID] = room;
         else
@@ -125,23 +127,41 @@ public class ServerInstancing : NetworkBehaviour
         callback?.Invoke();
     }
 
-    private void JoinRoom(NetworkConnection connection, RoomDetails room, UserData userData)
+    private void RecreateRoom(UserData _userData, Action callback = null)
+    {
+        RoomDetails room = new RoomDetails();
+        room.ID = _userData.userDataServer.roomId;
+        room.Name = _userData.userDataServer.roomName;
+        room.sceneHandle = currentRoomsRunning.Count + 1;
+        room.MaxPlayers = MAX_PLAYERS;
+        room.dishData = _userData.dishData;
+        room.roomTime = string.IsNullOrWhiteSpace(_userData.userDataServer.time) ? 0 : float.Parse(_userData.userDataServer.time);
+        if (currentRoomsRunning.ContainsKey(room.ID))
+            currentRoomsRunning[room.ID] = room;
+        else
+            currentRoomsRunning.Add(room.ID, room);
+
+        currentRoom = room;
+        callback?.Invoke();
+    }
+
+    private void JoinRoom(NetworkConnection connection, RoomDetails room, UserData userData, bool _restoreGame)
     {
         bool isFirstPlayer = room.userData.Count == 0 ? true : false;
 
         print("ROOM JOINING - " + room.Name + "- DISH - " + room.dishData.Dish_Name);
 
         // New User
-        if (string.IsNullOrWhiteSpace(userData.userDataServer.roomId) && string.IsNullOrWhiteSpace(userData.userDataServer.roomName))
+        if (string.IsNullOrWhiteSpace(userData.userDataServer.roomId))
         {
-            Debug.Log("New User is added");
+            Debug.Log("New User is added -> " + userData.userDataServer.userName);
             room.userData.Add(userData.userDataServer.uid, userData);
             room.currentConnections.Add(userData.userDataServer.uid, connection);
         }
         else
         {
             // Returning user
-            Debug.Log("Returning User");
+            Debug.Log("Returning User -> " + userData.userDataServer.userName);
             bool roomFound = false;
             if (currentRoomsRunning.ContainsKey(userData.userDataServer.roomId))
             {
@@ -156,7 +176,7 @@ public class ServerInstancing : NetworkBehaviour
             {
                 if (room.userData.ContainsKey(userData.userDataServer.uid))
                 {
-                    Debug.Log("User is replaced");
+                    Debug.Log("User is replaced -> " + userData.userDataServer.userName);
                     room.userData[userData.userDataServer.uid] = userData;
 
                     // Current Connections
@@ -168,6 +188,8 @@ public class ServerInstancing : NetworkBehaviour
                 else
                 {
                     print(userData.userDataServer.uid + " - User not for Found in the room - " + room.ID);
+                    room.userData.Add(userData.userDataServer.uid, userData);
+                    room.currentConnections.Add(userData.userDataServer.uid, connection);
                 }
             }
             else
@@ -187,7 +209,7 @@ public class ServerInstancing : NetworkBehaviour
             room.userData[userData.userDataServer.uid].leaderBoard = _leaderBoardUser;
 
         // Set Room and Dish For Joined User
-        ClientServerManager.Instance.SetDataForUser(connection, room, _leaderBoardUser);
+        ClientServerManager.Instance.SetDataForUser(connection, room, _leaderBoardUser, _restoreGame);
 
 
         // Start countdown when first user joins the room to wait for other players to join
@@ -200,7 +222,7 @@ public class ServerInstancing : NetworkBehaviour
                 // Start Game
                 UpdateWaitingTimeForAllPlayers(0, room.ID);
                 currentRoom = null;
-                StartGame(room.ID, GameManager.Instance.gamePlaySceneName, connection);
+                StartCoroutine(StartGame(room.ID, GameManager.Instance.gamePlaySceneName, connection));
             });
         }
 
@@ -210,28 +232,25 @@ public class ServerInstancing : NetworkBehaviour
         if (room.userData.Count == room.MaxPlayers && !room.hasGameStarted)
         {
             Debug.Log("Room is Full - Start Game");
-            currentRoom = null;
             foreach (var conn in room.currentConnections)
             {
                 currentRoom = null;
                 if (waitForOtherplayers != null)
                     GameManager.Instance.timer.StopTimer(waitForOtherplayers);
 
-                StartGame(room.ID, GameManager.Instance.gamePlaySceneName, connection);
+                StartCoroutine(StartGame(room.ID, GameManager.Instance.gamePlaySceneName, connection));
             }
         }
         else if (room.hasGameStarted) // Start game for returning user
         {
-            StartGame(room.ID, GameManager.Instance.gamePlaySceneName, connection);
+            StartCoroutine(StartGame(room.ID, GameManager.Instance.gamePlaySceneName, connection));
         }
     }
 
-    public void StartGame(string roomID, string sceneName, NetworkConnection conn, bool isSingleConnection = false, NetworkObject networkObject = null, int _botsCount = 0)
+    public IEnumerator StartGame(string roomID, string sceneName, NetworkConnection conn, bool isSingleConnection = false, NetworkObject networkObject = null, int _botsCount = 0)
     {
-
         RoomDetails _room = currentRoomsRunning[roomID];
         print($"Game Started for room - {_room.Name}");
-        //List<NetworkObject> networkObjects = new List<NetworkObject>();
 
         // Bots Setup
         int botsCount = _room.MaxPlayers - _room.userData.Count;
@@ -242,7 +261,7 @@ public class ServerInstancing : NetworkBehaviour
             {
                 id = _botData.userDataServer.uid,
                 userName = _botData.userDataServer.userName,
-                rank = "5",
+                rank = (_room.userData.Count + 1).ToString(),
                 dishName = _room.dishData.Dish_Name,
                 isBot = true
             };
@@ -258,21 +277,11 @@ public class ServerInstancing : NetworkBehaviour
             _room.userData[_botData.userDataServer.uid].leaderBoard = _leaderBoardBot;
             print(_botData.userDataServer.userName + "-Bot User Data added in Room-" + _room.Name);
 
-            //foreach (var item in _room.currentConnections)
-            //{
-            //    ClientServerManager.Instance.GenerateBot(item.Value, _botData);
-            //}
+            yield return new WaitForSeconds(0.25f);
         }
-
-        // Spawn
-        //foreach (var item in _room.currentConnections)
-        //{
-        //    networkObjects.Add(SpawnNetworkPlayer(playerNetworkPrefab, _room, item.Value));
-        //}
 
         SceneLookupData lookup = new SceneLookupData(_room.sceneHandle, sceneName);
         SceneLoadData sld = new SceneLoadData(lookup);
-        //sld.MovedNetworkObjects = networkObjects.ToArray();
 
         LoadParams loadParams = new LoadParams
         {
@@ -322,13 +331,17 @@ public class ServerInstancing : NetworkBehaviour
             currentRoomsRunning[_roomId].userData[_userData.userDataServer.uid].userDataServer.score = _userData.userDataServer.score;
             currentRoomsRunning[_roomId].userData[_userData.userDataServer.uid].hasCompleted = true;
 
-            SceneUnloadData sud = new SceneUnloadData(currentRoomsRunning[_roomId].sceneHandle);
+            if (currentRoomsRunning[_roomId].userData.ContainsKey(_userData.userDataServer.uid))
+                currentRoomsRunning[_roomId].userData.Remove(_userData.userDataServer.uid);
+            if (currentRoomsRunning[_roomId].currentConnections.ContainsKey(_userData.userDataServer.uid))
+                currentRoomsRunning[_roomId].currentConnections.Remove(_userData.userDataServer.uid);
+
+            SceneUnloadData sud = new SceneUnloadData(_sceneName);
             NetworkConnection[] conns = _unloadForAll ? currentRoomsRunning[_roomId].currentConnections.Values.ToArray() : new NetworkConnection[] { connection };
             NetworkManager.SceneManager.UnloadConnectionScenes(conns, sud);
 
             if (currentRoomsRunning[_roomId].IsGameCompleted())
                 currentRoomsRunning.Remove(_roomId);
-
 
             currentRoom = null;
         }
@@ -345,7 +358,8 @@ public class ServerInstancing : NetworkBehaviour
     {
         foreach (var item in currentRoom.currentConnections)
         {
-            ClientServerManager.Instance.UpdateWaitTime(item.Value, _timeLeft);
+            if (item.Value.IsActive)
+                ClientServerManager.Instance.UpdateWaitTime(item.Value, _timeLeft);
         }
     }
 
@@ -355,7 +369,8 @@ public class ServerInstancing : NetworkBehaviour
         {
             foreach (var item in currentRoomsRunning[_roomId].currentConnections)
             {
-                ClientServerManager.Instance.UpdateGamePlayTime(item.Value, _timeGone);
+                if (item.Value.IsActive)
+                    ClientServerManager.Instance.UpdateGamePlayTime(item.Value, _timeGone);
             }
         }
     }
@@ -369,6 +384,22 @@ public class ServerInstancing : NetworkBehaviour
         }
     }
     #endregion
+
+    [ServerRpc(RequireOwnership = false)]
+    public void DepawnPlayer(NetworkConnection connection, GameObject _player)
+    {
+        print("Player Despawn Server");
+        InstanceFinder.ServerManager.Despawn(_player);
+    }
+
+    //public override void OnStopServer()
+    //{
+    //    base.OnStopServer();
+    //    if (!IsServer) return;
+
+    //    print("Player Despawn Server");
+    //    Despawn();
+    //}
 
 
 
@@ -420,16 +451,19 @@ public class ServerInstancing : NetworkBehaviour
         if (temp_ServerParams.Length == 0)
             return;
 
-
         RoomDetails _room = temp_ServerParams[1] as RoomDetails;
 
         foreach (var _conn in _room.currentConnections)
         {
+            if (!_conn.Value.IsActive) continue;
+
             SpawnNetworkPlayer(playerNetworkPrefab, _room, _conn.Value);
 
-            foreach (var _user in _room.userData)
-                if (_user.Value.isBot)
-                    ClientServerManager.Instance.GenerateBot(_conn.Value, _user.Value);
+            foreach (var _user in _room.userData.Where(kv => kv.Value.isBot))
+            {
+                print(_user.Value.userDataServer.actualName);
+                ClientServerManager.Instance.GenerateBot(_conn.Value, _user.Value);
+            }
         }
 
 
@@ -437,13 +471,14 @@ public class ServerInstancing : NetworkBehaviour
         {
             _room.hasGameStarted = true;
             _room.startTime = (float)GameManager.Instance.timeManager.TicksToTime(TickType.Tick);
-            GameManager.Instance.timer.StartTimer(0, 3600, 1, _room.ID, UpdateRoomTime, () => { print("Timer on Server FINISHED for room -> " + _room.Name); });
+            GameManager.Instance.timer.StartTimer((int)_room.roomTime, MAX_TIME, 1, _room.ID, UpdateRoomTime, () => { print("Timer on Server FINISHED for room -> " + _room.Name); });
             print("Timer On Server Started For room -> " + _room.Name);
         }
 
 
         foreach (var item in _room.currentConnections)
-            ClientServerManager.Instance.StartGamePlay(item.Value);
+            if (item.Value.IsActive)
+                ClientServerManager.Instance.StartGamePlay(item.Value);
 
 
         //ClientServerManager.Instance.ActivatePlayerScripts(item.Value, item.Key);

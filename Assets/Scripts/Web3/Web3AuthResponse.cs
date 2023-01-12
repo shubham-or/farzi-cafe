@@ -9,7 +9,7 @@ public class Web3AuthResponse
     public class LoginResponse
     {
         public bool status;
-        public string address = System.Guid.NewGuid().ToString();
+        public string address =  GameManager.Instance.GetUserData().userDataServer.email.Replace('@', '_').Replace('.','_');
         public Data data;
 
 
