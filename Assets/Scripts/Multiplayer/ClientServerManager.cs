@@ -35,7 +35,7 @@ public class ClientServerManager : NetworkBehaviour
 
 
     [TargetRpc]
-    public void SetDataForUser(NetworkConnection connection, RoomDetails _room, LeaderBoardItem _leaderBoard, bool _restoreGame)
+    public void SetDataForUser(NetworkConnection connection, RoomDetails _room, LeaderBoardRecord _leaderBoard, bool _restoreGame)
     {
         print("SetRoomAndDishDetailsForUser -> " + _room.dishData.Dish_Name);
 
@@ -66,7 +66,7 @@ public class ClientServerManager : NetworkBehaviour
 
 
     [TargetRpc]
-    public void SetLeaderboard(NetworkConnection networkConnection = null, Dictionary<string, LeaderBoardItem> _leaderBoard = null)
+    public void SetLeaderboard(NetworkConnection networkConnection = null, Dictionary<string, LeaderBoardRecord> _leaderBoard = null)
     {
         print("Set leaderBoard Target RPC");
         ScreenManager.Instance.leaderboardScreen.SetLeaderboard(_leaderBoard.OrderBy(x => x.Value.time).ToDictionary(x => x.Key, x => x.Value));

@@ -14,18 +14,17 @@ public static class UnityWebRequestHandler
     public static readonly string couponDetailsGET = "getCouponDetails";
 
 
-
     public static IEnumerator AddWinnerRequest(UserData _userData, Action<string> _callback)
     {
         string _url = baseURL + addWinnerPOST;
-        string _postData = Newtonsoft.Json.JsonConvert.SerializeObject(new NFTClasses.WinnindRequestBody
+        string _postData = Newtonsoft.Json.JsonConvert.SerializeObject(new APIDataClasses.WinnindRequestBody
         {
             dishId = 0,
             userAddress = _userData.userDataServer.uid,
             userEmail = _userData.userDataServer.email,
             time = int.Parse(_userData.userDataServer.time)
         });
-        Debug.Log($"URL -> {_url} | Data -> {_postData}");
+        Debug.Log($"AddWinnerRequest URL -> {_url} | Data -> {_postData}");
         UnityWebRequest req = UnityWebRequest.Post(_url, _postData);
         yield return req.SendWebRequest();
 
@@ -46,11 +45,11 @@ public static class UnityWebRequestHandler
     {
         string _url = baseURL + topWinnersGET;
 
-        string _postData = Newtonsoft.Json.JsonConvert.SerializeObject(new NFTClasses.TopWinnersRequestBody
+        string _postData = Newtonsoft.Json.JsonConvert.SerializeObject(new APIDataClasses.TopWinnersRequestBody
         {
             restaurantName = _restaurantName
         });
-        Debug.Log($"URL -> {_url} | Data -> {_postData}");
+        Debug.Log($"GetTopWinnersRequest URL -> {_url} | Data -> {_postData}");
 
         UnityWebRequest req = UnityWebRequest.Get(_url);
         req.SetRequestHeader("Content-Type", "application/json");
@@ -75,13 +74,13 @@ public static class UnityWebRequestHandler
     public static IEnumerator RedeemRequest(string _dishName, string _walletAddress, Action<string> _callback)
     {
         string _url = baseURL + redeemPOST;
-        string _postData = Newtonsoft.Json.JsonConvert.SerializeObject(new  NFTClasses.RedeemRequestBody
+        string _postData = Newtonsoft.Json.JsonConvert.SerializeObject(new APIDataClasses.RedeemRequestBody
         {
             dishName = _dishName,
             userAddress = _walletAddress
         });
 
-        Debug.Log($"URL -> {_url} | Data -> {_postData}");
+        Debug.Log($"RedeemRequest URL -> {_url} | Data -> {_postData}");
         UnityWebRequest req = UnityWebRequest.Post(_url, _postData);
         yield return req.SendWebRequest();
 
@@ -101,14 +100,14 @@ public static class UnityWebRequestHandler
     public static IEnumerator WithdrawRequest(string _dishName, string _walletAddress, Action<string> _callback)
     {
         string _url = baseURL + withdrawPOST;
-        string _postData = Newtonsoft.Json.JsonConvert.SerializeObject(new NFTClasses.WithdrawRequestBody
+        string _postData = Newtonsoft.Json.JsonConvert.SerializeObject(new APIDataClasses.WithdrawRequestBody
         {
             dishName = _dishName,
             userAddress = _walletAddress,
             toAddress = _walletAddress
         });
 
-        Debug.Log($"URL -> {_url} | Data -> {_postData}");
+        Debug.Log($"WithdrawRequest URL -> {_url} | Data -> {_postData}");
         UnityWebRequest req = UnityWebRequest.Post(_url, _postData);
         yield return req.SendWebRequest();
 
@@ -128,7 +127,7 @@ public static class UnityWebRequestHandler
     public static IEnumerator GetMyNFTs(string _walletAddress, Action<string> _callback)
     {
         string _url = baseURL + myNFTsGET + $"/{_walletAddress}";
-        Debug.Log($"URL -> {_url}");
+        Debug.Log($"GetMyNFTs URL -> {_url}");
 
         UnityWebRequest req = UnityWebRequest.Get(_url);
         yield return req.SendWebRequest();
@@ -149,7 +148,7 @@ public static class UnityWebRequestHandler
     public static IEnumerator GetCouponDetails(int _dishId, Action<string> _callback)
     {
         string _url = baseURL + couponDetailsGET + $"/{_dishId}";
-        Debug.Log($"URL -> {_url}");
+        Debug.Log($"GetCouponDetails URL -> {_url}");
 
         UnityWebRequest req = UnityWebRequest.Get(_url);
         yield return req.SendWebRequest();
@@ -166,9 +165,10 @@ public static class UnityWebRequestHandler
         }
     }
 
+
     public static IEnumerator GetTexture(string _url, Action<Texture2D> _callback)
     {
-        Debug.Log($"URL -> {_url}");
+        Debug.Log($"GetTexture URL -> {_url}");
         UnityWebRequest req = UnityWebRequestTexture.GetTexture(_url);
         yield return req.SendWebRequest();
 
@@ -180,10 +180,13 @@ public static class UnityWebRequestHandler
         else
         {
             Texture2D myTexture = ((DownloadHandlerTexture)req.downloadHandler).texture;
+            Debug.Log("Texture name: " + myTexture.name);
             _callback?.Invoke(myTexture);
         }
     }
 
+
+    public static bool IsSuccess(string _status) => _status.Trim().ToLower().Equals("success");
 
 }
 

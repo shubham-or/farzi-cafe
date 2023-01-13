@@ -7,7 +7,8 @@ using UnityEngine.UI;
 
 public class NFTItem : MonoBehaviour
 {
-    public NFTClasses.NFTResponse.Result nft;
+    public APIDataClasses.NFTResponse.Result nft;
+    public string redeemCode;
 
     [SerializeField] private Button redeem;
     [SerializeField] private Button withdraw;
@@ -24,10 +25,10 @@ public class NFTItem : MonoBehaviour
 
     }
 
-    public void SetDetails(NFTClasses.NFTResponse.Result _data)
+    public void SetDetails(APIDataClasses.NFTResponse.Result _data)
     {
         nft = _data;
-        SetDishImageURL(5, _url => StartCoroutine(SetNFTImage(_url)));
+        StartCoroutine(SetDishImageURL(_data.couponId, _url => StartCoroutine(SetNFTImage(_url))));
 
         nftname.text = _data.dishName.Replace('_', ' ').Trim();
         rank.text = _data.rank.ToString();
@@ -40,7 +41,7 @@ public class NFTItem : MonoBehaviour
                 withdraw.gameObject.SetActive(true);
                 break;
             case "PENDING":
-                redeem.GetComponentInChildren<TextMeshProUGUI>().text = "Pending...";
+                redeem.GetComponentInChildren<TextMeshProUGUI>().text = "Pending";
                 redeem.interactable = false;
                 withdraw.gameObject.SetActive(false);
                 break;
@@ -59,7 +60,9 @@ public class NFTItem : MonoBehaviour
     {
         yield return StartCoroutine(UnityWebRequestHandler.GetCouponDetails(_id, _response =>
         {
-            _callback?.Invoke(_response);
+            APIDataClasses.CouponDetailsResponse response = Newtonsoft.Json.JsonConvert.DeserializeObject<APIDataClasses.CouponDetailsResponse>(_response);
+            if (UnityWebRequestHandler.IsSuccess(response.status))
+                _callback?.Invoke(response.data.couponUrl);
         }));
     }
 
@@ -75,22 +78,20 @@ public class NFTItem : MonoBehaviour
 
     public void OnClick_Redeem()
     {
-        NFTScreen.Instance.Redeem(nft, flag =>
+        NFTScreen.Instance.ShowRedeem(nft, (flag, code) =>
         {
             if (flag)
             {
-                redeem.GetComponentInChildren<TextMeshProUGUI>().text = "Pending...";
+                redeem.GetComponentInChildren<TextMeshProUGUI>().text = "Pending";
                 redeem.interactable = false;
                 withdraw.gameObject.SetActive(false);
             }
         });
-
-
     }
 
     public void OnClick_Withdraw()
     {
-        NFTScreen.Instance.Withdraw(nft, flag =>
+        NFTScreen.Instance.ShowWithdraw(nft, flag =>
         {
             if (flag)
             {

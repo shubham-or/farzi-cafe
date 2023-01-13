@@ -36,6 +36,8 @@ public class GameManager : MonoBehaviour
     [Space(10)] [SerializeField] private List<UserData> botsData = new List<UserData>();
     [Space(10)] public UserData savedData;
 
+    public static string restaurantName = "FARZI_CAFE";
+    public static string walletAddress = "0xf152078090f1dde75eacc72ed2cf5e073b04e2c4";
 
     public static GameManager Instance;
     private void Awake()
@@ -63,7 +65,7 @@ public class GameManager : MonoBehaviour
     public string GetUserUID() => userData.userDataServer.uid;
 
     public void SetDishData(DishData.Dish _dishData) => userData.dishData = _dishData;
-    public void SetLeaderboardData(LeaderBoardItem _leaderboard) => userData.leaderBoard = _leaderboard;
+    public void SetLeaderboardData(LeaderBoardRecord _leaderboard) => userData.leaderBoard = _leaderboard;
 
     public void SetGameTime(float _time)
     {
@@ -190,7 +192,7 @@ public class GameManager : MonoBehaviour
     {
         SetRoomDetails(_room);
         SetDishData(_room.dishData);
-        SetLeaderboardData(new LeaderBoardItem()
+        SetLeaderboardData(new LeaderBoardRecord()
         {
             id = GetUserUID(),
             userName = userData.userDataServer.userName,
@@ -221,7 +223,7 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < 4; i++)
         {
             UserData _botData = new UserData().CreateBotData();
-            LeaderBoardItem _leaderBoardBot = new LeaderBoardItem()
+            LeaderBoardRecord _leaderBoardBot = new LeaderBoardRecord()
             {
                 id = _botData.userDataServer.uid,
                 userName = _botData.userDataServer.userName,
@@ -364,4 +366,8 @@ public class GameManager : MonoBehaviour
 
 
     public static string GetUnixTimeCode() => DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
+
+
+    public static string ReplaceSpaceWithUnderscore(string _dishName) => _dishName.Replace(' ', '_').Trim();
+    public static string ReplaceUnderscoreWithSpace(string _dishName) => _dishName.Replace('_', ' ').Trim();
 }

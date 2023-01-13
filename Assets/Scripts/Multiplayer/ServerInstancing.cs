@@ -203,7 +203,7 @@ public class ServerInstancing : NetworkBehaviour
         // Add User to Leaderboard on Server
         UserData _userDataRoom = room.userData[userData.userDataServer.uid];
         _userDataRoom.dishData = room.dishData;
-        LeaderBoardItem _leaderBoardUser = new LeaderBoardItem() { id = _userDataRoom.userDataServer.uid, userName = _userDataRoom.userDataServer.userName, rank = "5", dishName = _userDataRoom.dishData.Dish_Name, isBot = false };
+        LeaderBoardRecord _leaderBoardUser = new LeaderBoardRecord() { id = _userDataRoom.userDataServer.uid, userName = _userDataRoom.userDataServer.userName, rank = "5", dishName = _userDataRoom.dishData.Dish_Name, isBot = false };
 
         if (room.userData.ContainsKey(userData.userDataServer.uid))
             room.userData[userData.userDataServer.uid].leaderBoard = _leaderBoardUser;
@@ -257,7 +257,7 @@ public class ServerInstancing : NetworkBehaviour
         for (int i = 0; i < botsCount; i++)
         {
             UserData _botData = new UserData().CreateBotData();
-            LeaderBoardItem _leaderBoardBot = new LeaderBoardItem()
+            LeaderBoardRecord _leaderBoardBot = new LeaderBoardRecord()
             {
                 id = _botData.userDataServer.uid,
                 userName = _botData.userDataServer.userName,
@@ -513,7 +513,7 @@ public class ServerInstancing : NetworkBehaviour
         {
             if (currentRoomsRunning[_roomId].userData.ContainsKey(_uid))
             {
-                Dictionary<string, LeaderBoardItem> tempLeaderBoard = new Dictionary<string, LeaderBoardItem>();
+                Dictionary<string, LeaderBoardRecord> tempLeaderBoard = new Dictionary<string, LeaderBoardRecord>();
                 foreach (var item in currentRoomsRunning[_roomId].userData)
                 {
                     if (!tempLeaderBoard.ContainsKey(item.Value.userDataServer.uid))

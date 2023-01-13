@@ -201,7 +201,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 2800000, guid: 0d2511d44678aae4794dc361ca45f35b, type: 3}
+  m_Texture: {fileID: 2800000, guid: 138d100cdbb860d4d867281e023c8a31, type: 3}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -773,7 +773,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04f3701275640dd4897c87ee121ea7dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Nft:
+  nft:
     rank: 0
     dishName: 
     couponId: 0

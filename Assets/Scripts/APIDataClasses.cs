@@ -1,12 +1,13 @@
 using System.Collections.Generic;
 
-public class NFTClasses
+public class APIDataClasses
 {
     #region Respons Classes
     [System.Serializable]
     public class NFTResponse
     {
-        public List<Result> result;
+        public string status;
+        public List<Result> data;
 
         [System.Serializable]
         public class Result
@@ -21,13 +22,15 @@ public class NFTClasses
         }
     }
 
+
     [System.Serializable]
-    public class CouponResponse
+    public class CouponDetailsResponse
     {
-        public Result result;
+        public string status;
+        public Data data;
 
         [System.Serializable]
-        public class Result
+        public class Data
         {
             public string restaurantName;
             public int couponId;
@@ -37,11 +40,27 @@ public class NFTClasses
         }
     }
 
+
+    [System.Serializable]
+    public class RedeemWithdrawResponse
+    {
+        public string status;
+        public string data;
+    }
+
+
     [System.Serializable]
     public class WinnersResponse
     {
-        public List<Winner> winners;
-        public bool tokensMinted;
+        public string status;
+        public Data data;
+
+        [System.Serializable]
+        public class Data
+        {
+            public List<Winner> winners;
+            public bool tokensMinted;
+        }
 
         [System.Serializable]
         public class Winner

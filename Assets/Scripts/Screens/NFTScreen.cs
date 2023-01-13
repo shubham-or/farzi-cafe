@@ -12,37 +12,47 @@ public class NFTScreen : MonoBehaviour
     [SerializeField] private TextMeshProUGUI address;
     [SerializeField] private TextMeshProUGUI warningNoNFT;
 
+    [SerializeField] private GameObject popupsGo;
+    [Header("---Redeem---")]
+    [SerializeField] private GameObject redeemCongratsGo;
+    [SerializeField] private TMP_InputField redeemCodeInput;
+
     [Header("---Withdraw---")]
-    [SerializeField] private GameObject withdrawGo;
-    [SerializeField] private GameObject inputsGO;
+    [SerializeField] private GameObject withdrawGO;
     [SerializeField] private GameObject processingGO;
     [SerializeField] private GameObject congratsGO;
     [SerializeField] private GameObject failedGO;
     [SerializeField] private TMP_InputField addressInput;
     [SerializeField] private TextMeshProUGUI error;
 
-    public const string restaurantName = "FARZI_CAFE";
-    public static string walletAddress = "0x6e2a98e14961c9619768d794b636cad486688754";
-
     public static NFTScreen Instance;
     private void Awake() => Instance = this;
 
     void Start()
     {
+        addressInput.interactable = false;
         StartCoroutine(GetMyNFTs());
     }
 
-    public void SetDishName(string _dishName) => _dishName.Replace(' ', '_').Trim();
+    private void OnEnable()
+    {
+        popupsGo.SetActive(false);
+        redeemCongratsGo.SetActive(false);
+        withdrawGO.SetActive(false);
+        processingGO.SetActive(false);
+        congratsGO.SetActive(false);
+        failedGO.SetActive(false);
+    }
 
     private IEnumerator GetMyNFTs()
     {
-        yield return UnityWebRequestHandler.GetMyNFTs(walletAddress, _response =>
+        yield return UnityWebRequestHandler.GetMyNFTs(GameManager.walletAddress, _response =>
         {
-            NFTClasses.NFTResponse _data = Newtonsoft.Json.JsonConvert.DeserializeObject<NFTClasses.NFTResponse>(_response);
-            if (_data.result.Count > 0)
+            APIDataClasses.NFTResponse _data = Newtonsoft.Json.JsonConvert.DeserializeObject<APIDataClasses.NFTResponse>(_response);
+            if (_data.data.Count > 0 && UnityWebRequestHandler.IsSuccess(_data.status))
             {
                 warningNoNFT.gameObject.SetActive(false);
-                foreach (var winner in _data.result)
+                foreach (var winner in _data.data)
                 {
                     Instantiate(nftItemPrefab, content).GetComponent<NFTItem>().SetDetails(winner);
                 }
@@ -59,49 +69,104 @@ public class NFTScreen : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void CopyToClipboard()
+    public void CopyToClipboard() => GUIUtility.systemCopyBuffer = address.text.Trim();
+
+
+
+
+    #region Redeem and Withdraw
+    public APIDataClasses.NFTResponse.Result selectedNFTItem;
+    Action<bool> _withdrawCallback;
+    Action<bool, string> _redeemCallback;
+    public void ShowRedeem(string _code)
     {
-        GUIUtility.systemCopyBuffer = address.text.Trim();
+        popupsGo.SetActive(true);
+        withdrawGO.SetActive(false);
+        processingGO.SetActive(true);
+        redeemCongratsGo.SetActive(true);
+        redeemCodeInput.text = _code;
+    }
+    public void ShowRedeem(APIDataClasses.NFTResponse.Result _NFT, Action<bool, string> _callback)
+    {
+        selectedNFTItem = _NFT;
+        _redeemCallback = _callback;
+        popupsGo.SetActive(true);
+        withdrawGO.SetActive(false);
+        processingGO.SetActive(true);
+
+        StartCoroutine(RedeemNFT(_NFT.dishName, GameManager.walletAddress, _redeemCallback));
     }
 
 
 
-
-    #region Withdraw
-    public void Redeem(NFTClasses.NFTResponse.Result _NFT, Action<bool> _callback)
-    {
-
-        StartCoroutine(RedeemNFT(_NFT.dishName, walletAddress, _callback));
-    }
-
-    private IEnumerator RedeemNFT(string _dishName, string _walletAddress, Action<bool> _callback)
+    private IEnumerator RedeemNFT(string _dishName, string _walletAddress, Action<bool, string> _callback)
     {
         yield return StartCoroutine(UnityWebRequestHandler.RedeemRequest(_dishName, _walletAddress, _response =>
         {
+            processingGO.SetActive(false);
+            APIDataClasses.RedeemWithdrawResponse response = Newtonsoft.Json.JsonConvert.DeserializeObject<APIDataClasses.RedeemWithdrawResponse>(_response);
 
+            if (UnityWebRequestHandler.IsSuccess(response.status))
+            {
+                redeemCongratsGo.SetActive(true);
+                redeemCodeInput.text = response.data;
+                _callback?.Invoke(true, response.data);
+            }
+            else
+            {
+                failedGO.SetActive(true);
+                _withdrawCallback?.Invoke(false);
+            }
+
+            selectedNFTItem = null;
+            _redeemCallback = null;
         }));
     }
 
 
-    public NFTClasses.NFTResponse.Result selectedNFTItem;
-    Action<bool> _nftCallback;
-    public void ShowWithdraw(NFTClasses.NFTResponse.Result _NFT, Action<bool> _callback)
+
+    public void ShowWithdraw(APIDataClasses.NFTResponse.Result _NFT, Action<bool> _callback)
     {
         selectedNFTItem = _NFT;
-        withdrawGo.SetActive(true);
-        inputsGO.SetActive(true);
+        _withdrawCallback = _callback;
+        popupsGo.SetActive(true);
+        withdrawGO.SetActive(true);
+        addressInput.text = GameManager.walletAddress;
     }
 
-    public void Withdraw(NFTClasses.NFTResponse.Result _NFT, Action<bool> _callback)
+
+    public void OnClick_Withdraw()
     {
-        StartCoroutine(WithdrawNFT(_NFT.dishName, walletAddress, _nftCallback));
+        Withdraw(selectedNFTItem, _withdrawCallback);
+    }
+
+    public void Withdraw(APIDataClasses.NFTResponse.Result _NFT, Action<bool> _callback)
+    {
+        withdrawGO.SetActive(false);
+        processingGO.SetActive(true);
+        StartCoroutine(WithdrawNFT(_NFT.dishName, GameManager.walletAddress, _callback));
     }
 
     private IEnumerator WithdrawNFT(string _dishName, string _walletAddress, Action<bool> _callback)
     {
         yield return StartCoroutine(UnityWebRequestHandler.WithdrawRequest(_dishName, _walletAddress, _response =>
         {
+            processingGO.SetActive(false);
+            APIDataClasses.RedeemWithdrawResponse response = Newtonsoft.Json.JsonConvert.DeserializeObject<APIDataClasses.RedeemWithdrawResponse>(_response);
 
+            if (UnityWebRequestHandler.IsSuccess(response.status))
+            {
+                congratsGO.SetActive(true);
+                _callback?.Invoke(true);
+            }
+            else
+            {
+                failedGO.SetActive(true);
+                _callback?.Invoke(false);
+            }
+
+            selectedNFTItem = null;
+            _withdrawCallback = null;
         }));
     }
     #endregion

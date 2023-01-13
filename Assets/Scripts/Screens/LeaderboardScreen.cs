@@ -1,17 +1,54 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class LeaderboardScreen : MonoBehaviour
 {
-    [SerializeField] private GameObject records;
+    [SerializeField] private GameObject itemPrefab;
+
+    [SerializeField] private Transform records;
     [SerializeField] private Sprite yellow;
     [SerializeField] private Sprite white;
     [SerializeField] private Sprite purple;
 
+
+    private void Start()
+    {
+        StartCoroutine(GetTopWinners());
+    }
+
     void OnEnable()
     {
-        Init();
+        //Init();
+    }
+
+
+    private IEnumerator GetTopWinners()
+    {
+        yield return UnityWebRequestHandler.GetTopWinnersRequest(GameManager.restaurantName, _response =>
+        {
+            APIDataClasses.WinnersResponse _data = Newtonsoft.Json.JsonConvert.DeserializeObject<APIDataClasses.WinnersResponse>(_response);
+            if (_data.data.winners.Count > 0 && UnityWebRequestHandler.IsSuccess(_data.status))
+            {
+                bool _isOwnerInTop5 = false;
+                int _rank = 1;
+                for (int i = 0; i < 5 && i < _data.data.winners.Count; i++)
+                {
+                    if (_data.data.winners[i].userAddress == GameManager.walletAddress)
+                        _isOwnerInTop5 = true;
+                    Instantiate(itemPrefab, records).GetComponent<LeaderboardItem>().SetDetails(_data.data.winners[i], _rank++, _data.data.winners[i].userAddress == GameManager.walletAddress);
+                }
+
+                if (!_isOwnerInTop5)
+                {
+                    APIDataClasses.WinnersResponse.Winner owner = _data.data.winners.Find(x => x.userAddress == GameManager.walletAddress);
+                    if (owner != null)
+                        Instantiate(itemPrefab, records).GetComponent<LeaderboardItem>().SetDetails(owner, _data.data.winners.IndexOf(owner), true);
+                }
+
+            }
+        });
     }
 
     public void Init()
@@ -22,10 +59,9 @@ public class LeaderboardScreen : MonoBehaviour
         ServerInstancing.Instance.GetLeaderboard(GameManager.Instance.GetUserData().userDataServer.uid, GameManager.Instance.GetUserData().userDataServer.roomId);
     }
 
-    public void SetLeaderboard(Dictionary<string, LeaderBoardItem> _leaderBoard)
+    public void SetLeaderboard(Dictionary<string, LeaderBoardRecord> _leaderBoard)
     {
         print("Set leaderBoard Target Local COUNT - " + _leaderBoard.Count);
-        //Dictionary<string, LeaderBoardItem> _leaderBoardSorted = _leaderBoard.OrderBy(x => x.Value.time).ToDictionary(x => x.Key, x => x.Value);
 
         int _rank = 0;
         foreach (var item in _leaderBoard)

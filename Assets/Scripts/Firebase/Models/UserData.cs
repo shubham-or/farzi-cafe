@@ -19,7 +19,7 @@ public class UserData
 
     [Space(10)]
     [Header("---LeaderboardData---")]
-    public LeaderBoardItem leaderBoard = new LeaderBoardItem();
+    public LeaderBoardRecord leaderBoard = new LeaderBoardRecord();
 
 
     public UserData CreateBotData()
@@ -35,7 +35,7 @@ public class UserData
     }
 
     public void SetDishData(DishData.Dish _dishData) => dishData = _dishData;
-    public void SetLeaderboardData(LeaderBoardItem _leaderboard) => leaderBoard = _leaderboard;
+    public void SetLeaderboardData(LeaderBoardRecord _leaderboard) => leaderBoard = _leaderboard;
 
     public void SetRoomDetails(RoomDetails roomDetails)
     {
@@ -47,7 +47,7 @@ public class UserData
 
 
 [Serializable]
-public class LeaderBoardItem
+public class LeaderBoardRecord
 {
     public string id;
     public string rank;
