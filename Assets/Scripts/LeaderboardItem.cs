@@ -40,4 +40,13 @@ public class LeaderboardItem : MonoBehaviour
         if (isOwner) rankImage.color = ownerColor;
         playerNameImage.color = dishNameImage.color = timeImage.color = isOwner ? ownerColor : Color.white;
     }
+
+
+    public void SetEmpty()
+    {
+        gameObject.name = "Empty";
+        foreach (Transform item in transform)
+            item.gameObject.SetActive(false);
+
+    }
 }

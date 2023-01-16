@@ -50,7 +50,6 @@ public class PopUpManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        //DontDestroyOnLoad(gameObject);
     }
 
     void Start()
@@ -92,18 +91,21 @@ public class PopUpManager : MonoBehaviour
         mm.text = "00";
         ss.text = "00";
         farzified.SetActive(false);
+        GameManager.Instance.ResetUserData();
         ScreenManager.Instance.SwitchScreen(null, ScreenManager.Instance.menuScreen.gameObject);
     }
 
-    public void ShowPopup_Farzified(string _dishName, Texture2D _dishTexture, float _timer)
+    public void ShowPopup_Farzified(float _timer)
     {
         GameManager.Event_OnGamePause();
         bgImage.enabled = true;
         hh.text = "00";
         mm.text = Timer.GetMinutes(_timer).ToString();
         ss.text = Timer.GetSeconds(_timer).ToString();
+
         GameManager.Instance.SetGameTime(_timer);
         GameManager.Instance.StopGamePlay();
+
         farzified.SetActive(true);
     }
 
@@ -141,7 +143,7 @@ public class PopUpManager : MonoBehaviour
     #region Dish Found
     private void OnDishFoundCallback(string _dishName, Texture2D _dishTexture, float _timer)
     {
-        ShowPopup_Farzified(_dishName, _dishTexture, _timer);
+        ShowPopup_Farzified(_timer);
         //StartCoroutine(Co_OnDishFound(_dishName, _dishTexture, _timer));
     }
 
@@ -152,7 +154,7 @@ public class PopUpManager : MonoBehaviour
         yield return new WaitForSeconds(3);
         HideReadyToServe();
         yield return new WaitForEndOfFrame();
-        ShowPopup_Farzified(_dishName, _dishTexture, _timer);
+        ShowPopup_Farzified(_timer);
     }
     #endregion
 

@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour
     [Space(10)] public UserData savedData;
 
     public static string restaurantName = "FARZI_CAFE";
-    public static string walletAddress = "0xf152078090f1dde75eacc72ed2cf5e073b04e2c4";
+    public static string testingAddress = "0xA2E3Ed8faDd143C3A96f6d43c92d32336B355B9a";
 
     public static GameManager Instance;
     private void Awake()
@@ -254,6 +254,7 @@ public class GameManager : MonoBehaviour
         return aI.gameObject;
     }
 
+    Coroutine timerCo;
     private void StartGamePlay_Local(RoomDetails _room, bool _restoreGame = false)
     {
         print("GamePlay Started LOCAL");
@@ -262,32 +263,41 @@ public class GameManager : MonoBehaviour
         ScreenManager.Instance.gameplayScreen.StartGamePlay();
         hasGameStarted = true;
         int _startTime = string.IsNullOrWhiteSpace(savedData.userDataServer.time) ? 0 : int.Parse(savedData.userDataServer.time);
-        timer.StartTimer(_restoreGame ? _startTime : 0, ServerInstancing.MAX_TIME, 1, _onUpdate: UpdateGamePlayTime, _onComplete: () => { print("Timer on LOCAL FINISHED for room -> " + _room.Name); });
+        timerCo = timer.StartTimer(_restoreGame ? _startTime : 0, ServerInstancing.MAX_TIME, 1, userData.userDataServer.roomId, _onUpdate: UpdateGamePlayTime, _onComplete: () =>
+        {
+            StopCoroutine(timerCo); print("Timer on LOCAL FINISHED for room -> " + _room.Name);
+        });
     }
 
     public void UpdateGamePlayTime(float _timeGone, string _roomID)
     {
+        if (userData.hasCompleted)
+        {
+            StopCoroutine(timerCo);
+            return;
+        }
+
         ScreenManager.Instance.gameplayScreen.UpdateGamePlayTime(_timeGone);
-        if (!GetUserData().hasCompleted)
-            SetGameTime(_timeGone);
+        SetGameTime(_timeGone);
     }
 
     #endregion
 
     public void StopGamePlay()
     {
+        userData.hasCompleted = true;
+        StopAllCoroutines();
+
         if (useFirebase)
             UpdateRoomDetailsOnFirebase(true);
+
         ServerInstancing.Instance.UpdateUserTimeOnServerLeaderboard(GetUserUID(), GetUserData().userDataServer.roomId);
-        ServerInstancing.Instance.GetLeaderboard(GetUserUID(), GetUserData().userDataServer.roomId);
+        //ServerInstancing.Instance.GetLeaderboard(GetUserUID(), GetUserData().userDataServer.roomId);
         ServerInstancing.Instance.StopGame(GetUserData(), GetUserData().userDataServer.roomId, gamePlaySceneName);
-        GetUserData().hasCompleted = true;
-        ResetUserData();
-
-        //InstanceFinder.ClientManager.StopConnection();
+       
+        if (isRunningLocal)
+            SceneManager.UnloadSceneAsync(gamePlaySceneName);
     }
-
-
 
 
 
@@ -363,6 +373,7 @@ public class GameManager : MonoBehaviour
         print("OnFailed_UpdateRoomName" + _json);
     }
     #endregion
+
 
 
     public static string GetUnixTimeCode() => DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();

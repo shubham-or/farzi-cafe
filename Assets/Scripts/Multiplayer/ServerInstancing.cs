@@ -325,6 +325,7 @@ public class ServerInstancing : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void StopGame(UserData _userData, string _roomId, string _sceneName, bool _unloadForAll = false, NetworkConnection connection = null)
     {
+        NetworkConnection con = null;
         if (currentRoomsRunning.ContainsKey(_roomId))
         {
             print(_userData.userDataServer.userName + " - Unloading Scene For Room - " + currentRoomsRunning[_roomId].Name);
@@ -333,8 +334,12 @@ public class ServerInstancing : NetworkBehaviour
 
             if (currentRoomsRunning[_roomId].userData.ContainsKey(_userData.userDataServer.uid))
                 currentRoomsRunning[_roomId].userData.Remove(_userData.userDataServer.uid);
+
             if (currentRoomsRunning[_roomId].currentConnections.ContainsKey(_userData.userDataServer.uid))
+            {
+                con = currentRoomsRunning[_roomId].currentConnections[_userData.userDataServer.uid];
                 currentRoomsRunning[_roomId].currentConnections.Remove(_userData.userDataServer.uid);
+            }
 
             SceneUnloadData sud = new SceneUnloadData(_sceneName);
             NetworkConnection[] conns = _unloadForAll ? currentRoomsRunning[_roomId].currentConnections.Values.ToArray() : new NetworkConnection[] { connection };
@@ -345,6 +350,9 @@ public class ServerInstancing : NetworkBehaviour
 
             currentRoom = null;
         }
+
+        print("ADD WINNER Server call for " + _userData.userDataServer.uid);
+        ClientServerManager.Instance.AddWinner(con);
     }
 
     public float GetRoomTime(string _roomID)
@@ -509,6 +517,7 @@ public class ServerInstancing : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void GetLeaderboard(string _uid, string _roomId)
     {
+        return;
         if (currentRoomsRunning.ContainsKey(_roomId))
         {
             if (currentRoomsRunning[_roomId].userData.ContainsKey(_uid))

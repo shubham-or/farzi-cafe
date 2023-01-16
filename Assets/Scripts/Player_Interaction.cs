@@ -61,6 +61,7 @@ public class Player_Interaction : NetworkBehaviour
         {
             m_UIHandler = GameManager.Instance.uIHandler;
             m_CluesManager = GameManager.Instance.cluesManager;
+            Popup_Disable();
         }
 
         //if (MainCamera)
@@ -153,13 +154,14 @@ public class Player_Interaction : NetworkBehaviour
     {
         m_UIHandler.Key_E_Popup_Off();
         isObjPicking = false;
+        hitCollider = null;
     }
 
 
     public Collider hitCollider;
     private void OnTriggerEnter(Collider other)
     {
-        print("Enter");
+        //print("Enter");
         if (other.gameObject.name == "RightDoor_Collider")
             GameManager.Instance.rightdoor.SetBool("IsPlay", true);
         else if (other.gameObject.name == "LeftDoor_Collider")
@@ -208,7 +210,7 @@ public class Player_Interaction : NetworkBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        print("Exit");
+        //print("Exit");
         if (other.gameObject.name == "RightDoor_Collider")
             GameManager.Instance.rightdoor.SetBool("IsPlay", false);
         else if (other.gameObject.name == "LeftDoor_Collider")

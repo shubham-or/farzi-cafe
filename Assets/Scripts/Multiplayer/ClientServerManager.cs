@@ -64,12 +64,31 @@ public class ClientServerManager : NetworkBehaviour
     }
 
 
+    [TargetRpc]
+    public void AddWinner(NetworkConnection networkConnection)
+    {
+        if (GameManager.Instance.isRunningLocal) return;
+        StartCoroutine(Co_AddWinner());
+
+    }
+
+    private IEnumerator Co_AddWinner()
+    {
+        yield return UnityWebRequestHandler.AddWinnerRequest(GameManager.Instance.GetUserData(), _response =>
+         {
+             APIDataClasses.GenericResponse response = JsonConvert.DeserializeObject<APIDataClasses.GenericResponse>(_response);
+             if (!UnityWebRequestHandler.IsSuccess(response.status))
+                 print("COULD NOT ADD WINNER");
+         });
+    }
 
     [TargetRpc]
     public void SetLeaderboard(NetworkConnection networkConnection = null, Dictionary<string, LeaderBoardRecord> _leaderBoard = null)
     {
+        return;
+
         print("Set leaderBoard Target RPC");
-        ScreenManager.Instance.leaderboardScreen.SetLeaderboard(_leaderBoard.OrderBy(x => x.Value.time).ToDictionary(x => x.Key, x => x.Value));
+        //ScreenManager.Instance.leaderboardScreen.SetLeaderboard(_leaderBoard.OrderBy(x => x.Value.time).ToDictionary(x => x.Key, x => x.Value));
     }
 
     [TargetRpc]
@@ -128,7 +147,6 @@ public class ClientServerManager : NetworkBehaviour
     {
         if (ServerInstancing.Instance.currentRoomsRunning[roomName].userData.Count != ServerInstancing.Instance.currentRoomsRunning[roomName].MaxPlayers)
             return false;
-
 
         foreach (var userData in ServerInstancing.Instance.currentRoomsRunning[roomName].userData.Values)
         {

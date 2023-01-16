@@ -19,13 +19,16 @@ public static class UnityWebRequestHandler
         string _url = baseURL + addWinnerPOST;
         string _postData = Newtonsoft.Json.JsonConvert.SerializeObject(new APIDataClasses.WinnindRequestBody
         {
-            dishId = 0,
+            restaurantName = GameManager.restaurantName,
+            dishName = GameManager.ReplaceSpaceWithUnderscore(_userData.dishData.Dish_Name),
             userAddress = _userData.userDataServer.uid,
             userEmail = _userData.userDataServer.email,
             time = int.Parse(_userData.userDataServer.time)
         });
         Debug.Log($"AddWinnerRequest URL -> {_url} | Data -> {_postData}");
-        UnityWebRequest req = UnityWebRequest.Post(_url, _postData);
+        UnityWebRequest req = UnityWebRequest.Put(_url, _postData);
+        req.method = "POST";
+        req.SetRequestHeader("Content-Type", "application/json");
         yield return req.SendWebRequest();
 
         if (req.result != UnityWebRequest.Result.Success)
@@ -81,7 +84,9 @@ public static class UnityWebRequestHandler
         });
 
         Debug.Log($"RedeemRequest URL -> {_url} | Data -> {_postData}");
-        UnityWebRequest req = UnityWebRequest.Post(_url, _postData);
+        UnityWebRequest req = UnityWebRequest.Put(_url, _postData);
+        req.method = "POST";
+        req.SetRequestHeader("Content-Type", "application/json");
         yield return req.SendWebRequest();
 
         if (req.result != UnityWebRequest.Result.Success)
@@ -108,7 +113,9 @@ public static class UnityWebRequestHandler
         });
 
         Debug.Log($"WithdrawRequest URL -> {_url} | Data -> {_postData}");
-        UnityWebRequest req = UnityWebRequest.Post(_url, _postData);
+        UnityWebRequest req = UnityWebRequest.Put(_url, _postData);
+        req.method = "POST";
+        req.SetRequestHeader("Content-Type", "application/json");
         yield return req.SendWebRequest();
 
         if (req.result != UnityWebRequest.Result.Success)

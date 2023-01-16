@@ -412,7 +412,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: 326cbd72e3a568445b7398988d0b0ec9, type: 3}
-  m_Type: 0
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -681,7 +681,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: b6af408926270c847af254e8c6fd50c2, type: 3}
-  m_Type: 0
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -781,6 +781,7 @@ MonoBehaviour:
     userEmail: 
     status: 
     redeemedDate: 
+    redeemCode: 
   redeem: {fileID: 6280503430434538000}
   withdraw: {fileID: 5598138606981207371}
   dishImage: {fileID: 6546895055324494135}
@@ -1296,7 +1297,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: b6af408926270c847af254e8c6fd50c2, type: 3}
-  m_Type: 0
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4

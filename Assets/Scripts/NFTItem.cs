@@ -8,7 +8,6 @@ using UnityEngine.UI;
 public class NFTItem : MonoBehaviour
 {
     public APIDataClasses.NFTResponse.Result nft;
-    public string redeemCode;
 
     [SerializeField] private Button redeem;
     [SerializeField] private Button withdraw;
@@ -42,7 +41,6 @@ public class NFTItem : MonoBehaviour
                 break;
             case "PENDING":
                 redeem.GetComponentInChildren<TextMeshProUGUI>().text = "Pending";
-                redeem.interactable = false;
                 withdraw.gameObject.SetActive(false);
                 break;
             case "REDEEMED":
@@ -63,6 +61,8 @@ public class NFTItem : MonoBehaviour
             APIDataClasses.CouponDetailsResponse response = Newtonsoft.Json.JsonConvert.DeserializeObject<APIDataClasses.CouponDetailsResponse>(_response);
             if (UnityWebRequestHandler.IsSuccess(response.status))
                 _callback?.Invoke(response.data.couponUrl);
+            else
+                _callback?.Invoke("");
         }));
     }
 
@@ -78,15 +78,21 @@ public class NFTItem : MonoBehaviour
 
     public void OnClick_Redeem()
     {
-        NFTScreen.Instance.ShowRedeem(nft, (flag, code) =>
+        if (nft.status.Equals("PENDING") && !string.IsNullOrWhiteSpace(nft.redeemCode))
+            NFTScreen.Instance.ShowRedeemCode(nft.redeemCode);
+        else
         {
-            if (flag)
+            NFTScreen.Instance.ShowRedeem(nft, (flag, code) =>
             {
-                redeem.GetComponentInChildren<TextMeshProUGUI>().text = "Pending";
-                redeem.interactable = false;
-                withdraw.gameObject.SetActive(false);
-            }
-        });
+                if (flag)
+                {
+                    nft.status = "PENDING";
+                    nft.redeemCode = code;
+                    redeem.GetComponentInChildren<TextMeshProUGUI>().text = "Pending";
+                    withdraw.gameObject.SetActive(false);
+                }
+            });
+        }
     }
 
     public void OnClick_Withdraw()
@@ -96,7 +102,7 @@ public class NFTItem : MonoBehaviour
             if (flag)
             {
                 redeem.gameObject.SetActive(false);
-                withdraw.gameObject.SetActive(false);
+                withdraw.interactable = false;
             }
         });
 

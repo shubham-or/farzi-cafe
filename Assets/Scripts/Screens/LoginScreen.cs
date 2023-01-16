@@ -69,6 +69,9 @@ public class LoginScreen : MonoBehaviour
                     score = "0"
                 }
             });
+
+            //GameManager.walletAddress = _response.address;
+
             OnSuccess_PostData(_response.address);
         }
     }
@@ -315,6 +318,7 @@ public class LoginScreen : MonoBehaviour
         }
 
         GameManager.Instance.GetUserData().userDataServer.userName = userName.text;
+        //GameManager.Instance.GetUserData().userDataServer.uid = GameManager.walletAddress;
 
         if (Application.isEditor)
             GameManager.Instance.playerDataHandler.SetFilePath(userName.text.Trim());

@@ -12,6 +12,7 @@ public class LeaderboardScreen : MonoBehaviour
     [SerializeField] private Sprite white;
     [SerializeField] private Sprite purple;
 
+    [TextArea] public string JSON_testing;
 
     private void Start()
     {
@@ -35,23 +36,26 @@ public class LeaderboardScreen : MonoBehaviour
                 int _rank = 1;
                 for (int i = 0; i < 5 && i < _data.data.winners.Count; i++)
                 {
-                    if (_data.data.winners[i].userAddress == GameManager.walletAddress)
+                    if (_data.data.winners[i].userAddress == GameManager.Instance.GetUserUID())
                         _isOwnerInTop5 = true;
-                    Instantiate(itemPrefab, records).GetComponent<LeaderboardItem>().SetDetails(_data.data.winners[i], _rank++, _data.data.winners[i].userAddress == GameManager.walletAddress);
+                    Instantiate(itemPrefab, records).GetComponent<LeaderboardItem>().SetDetails(_data.data.winners[i], _rank++, _data.data.winners[i].userAddress == GameManager.Instance.GetUserUID());
                 }
 
                 if (!_isOwnerInTop5)
                 {
-                    APIDataClasses.WinnersResponse.Winner owner = _data.data.winners.Find(x => x.userAddress == GameManager.walletAddress);
+                    APIDataClasses.WinnersResponse.Winner owner = _data.data.winners.Find(x => x.userAddress == GameManager.Instance.GetUserUID());
                     if (owner != null)
-                        Instantiate(itemPrefab, records).GetComponent<LeaderboardItem>().SetDetails(owner, _data.data.winners.IndexOf(owner), true);
+                    {
+                        Instantiate(itemPrefab, records).GetComponent<LeaderboardItem>().SetEmpty();
+                        Instantiate(itemPrefab, records).GetComponent<LeaderboardItem>().SetDetails(owner, _data.data.winners.IndexOf(owner) + 1, true);
+                    }
                 }
 
             }
         });
     }
 
-    public void Init()
+    private void Init()
     {
         foreach (Transform item in records.transform)
             item.gameObject.SetActive(false);
@@ -61,6 +65,7 @@ public class LeaderboardScreen : MonoBehaviour
 
     public void SetLeaderboard(Dictionary<string, LeaderBoardRecord> _leaderBoard)
     {
+        return;
         print("Set leaderBoard Target Local COUNT - " + _leaderBoard.Count);
 
         int _rank = 0;

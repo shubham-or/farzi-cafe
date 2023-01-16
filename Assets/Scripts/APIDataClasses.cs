@@ -19,6 +19,7 @@ public class APIDataClasses
             public string userEmail;
             public string status;
             public string redeemedDate;
+            public string redeemCode;
         }
     }
 
@@ -42,7 +43,7 @@ public class APIDataClasses
 
 
     [System.Serializable]
-    public class RedeemWithdrawResponse
+    public class GenericResponse
     {
         public string status;
         public string data;
@@ -72,6 +73,9 @@ public class APIDataClasses
             public int couponId;
         }
     }
+
+
+
     #endregion
 
 
@@ -85,7 +89,8 @@ public class APIDataClasses
 
     public class WinnindRequestBody
     {
-        public int dishId;
+        public string dishName;
+        public string restaurantName;
         public string userAddress;
         public string userEmail;
         public int time;
